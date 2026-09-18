@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Saya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ============ PROFIL HEADER CARD ============ */
+.profile-header-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); position: relative; }
+.cover-banner { position: relative; height: 200px; background: linear-gradient(120deg, #0b4a44 0%, #00a86b 35%, #34d399 70%, #bff0e4 100%); overflow: hidden; }
+.tri { position: absolute; background: rgba(255, 255, 255, 0.10); }
+.tri-1 { width: 480px; height: 480px; top: -280px; left: -80px; transform: rotate(20deg); clip-path: polygon(0 0, 100% 30%, 40% 100%); background: rgba(255,255,255,0.08); }
+.tri-2 { width: 420px; height: 420px; top: -180px; left: 220px; transform: rotate(-10deg); clip-path: polygon(0 0, 100% 20%, 30% 100%); background: rgba(255,255,255,0.12); }
+.tri-3 { width: 500px; height: 500px; top: -260px; left: 520px; transform: rotate(35deg); clip-path: polygon(10% 0, 100% 10%, 20% 100%); background: rgba(6, 40, 36, 0.18); }
+.tri-4 { width: 380px; height: 380px; top: -120px; right: -60px; transform: rotate(-25deg); clip-path: polygon(0 10%, 100% 0, 60% 100%); background: rgba(255,255,255,0.10); }
+.tri-5 { width: 300px; height: 300px; bottom: -180px; left: 40%; transform: rotate(8deg); clip-path: polygon(0 100%, 50% 0, 100% 100%); background: rgba(255,255,255,0.14); }
+.profile-photo-wrap { position: absolute; top: 130px; left: 56%; transform: translateX(-50%); }
+.profile-photo-ring { width: 150px; height: 150px; border-radius: 50%; padding: 4px; background: conic-gradient(from 200deg, #5aa9f7, #f472b6, #f5a524, #34d399, #5aa9f7); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 22px rgba(16, 40, 34, 0.18); }
+.profile-photo { width: 100%; height: 100%; border-radius: 50%; background: #eef1f0; display: flex; align-items: center; justify-content: center; border: 4px solid #ffffff; }
+.profile-photo-actions { position: absolute; top: 4px; right: -46px; display: flex; flex-direction: column; gap: 8px; }
+.profile-summary-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 68px 32px 22px; gap: 20px; }
+.profile-meta-left { display: flex; gap: 40px; }
+.meta-item { display: flex; align-items: flex-start; gap: 10px; }
+.meta-item div { display: flex; flex-direction: column; gap: 3px; }
+.meta-item strong { font-size: 15px; font-weight: 800; color: #101828; }
+.meta-item span { font-size: 12.5px; font-weight: 600; color: #8a95a0; display: flex; align-items: center; gap: 5px; }
+.edit-pencil { cursor: pointer; }
+.profile-meta-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-top: 4px; }
+.profile-fullname { font-size: 15px; font-weight: 800; color: #101828; }
+.profile-jawatan { font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px; color: #00a86b; text-transform: uppercase; }
+.profile-tabs { display: flex; align-items: center; gap: 4px; background: #f2f8f6; border-top: 1px solid #e5ece9; padding: 6px 24px; overflow-x: auto; }
+.profile-tab { display: flex; align-items: center; gap: 7px; padding: 12px 16px; font-size: 13.5px; font-weight: 700; color: #667085; text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; }
+.profile-tab:hover { color: #00a86b; }
+.profile-tab.active { color: #00a86b; border-bottom-color: #00a86b; }
+.profile-tab-end { margin-left: auto; }
+/* VERIFY BANNER */
+.verify-banner { display: flex; align-items: center; gap: 14px; background: linear-gradient(90deg, #00a86b, #34d399); border-radius: 16px; padding: 18px 24px; margin-bottom: 20px; color: #ffffff; }
+.verify-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(255, 255, 255, 0.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.verify-text { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.verify-text span { font-size: 12.5px; opacity: 0.85; }
+.verify-text strong { font-size: 14.5px; font-weight: 800; }
+.badge-confirmed { background: rgba(255, 255, 255, 0.22); color: #ffffff; font-size: 12px; font-weight: 700; padding: 7px 16px; border-radius: 999px; white-space: nowrap; }
+.badge-inline { background: #d7f0ea; color: #00a86b; padding: 4px 12px; }
+/* FIELD GRID */
+.field-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 28px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-wide { grid-column: span 3; }
+.field-label { font-size: 11.5px; font-weight: 600; color: #98a2b3; }
+.field-value { font-size: 14px; font-weight: 700; color: #1d2939; }
+/* MINI TABS */
+.mini-tabs input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+.mini-tabs-nav { display: flex; gap: 26px; border-bottom: 1px solid #eef0f1; margin-bottom: 18px; }
+.mini-tabs-nav label { display: flex; align-items: center; gap: 6px; padding: 4px 0 12px; font-size: 13.5px; font-weight: 700; color: #8a95a0; cursor: pointer; border-bottom: 2px solid transparent; }
+.badge-count { background: #eef1f0; color: #667085; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 999px; }
+.mini-tabs-panel { display: none; }
+#tab-pasangan:checked ~ .mini-tabs-nav label[for="tab-pasangan"],
+#tab-ibubapa:checked ~ .mini-tabs-nav label[for="tab-ibubapa"],
+#tab-anak:checked ~ .mini-tabs-nav label[for="tab-anak"],
+#tab-waris:checked ~ .mini-tabs-nav label[for="tab-waris"] { color: #00a86b; border-bottom-color: #00a86b; }
+#tab-pasangan:checked ~ .panel-pasangan,
+#tab-ibubapa:checked ~ .panel-ibubapa,
+#tab-anak:checked ~ .panel-anak,
+#tab-waris:checked ~ .panel-waris { display: block; }
+@media (max-width: 900px) { .field-grid { grid-template-columns: repeat(2, 1fr); } .field-wide { grid-column: span 2; } }
+@media (max-width: 700px) { .field-grid { grid-template-columns: 1fr; } .field-wide { grid-column: span 1; } .profile-photo-wrap { left: 50%; } .profile-summary-row { flex-direction: column; align-items: flex-start; } .profile-meta-left { gap: 24px; flex-wrap: wrap; } .profile-meta-right { align-items: flex-start; } }
+</style>
+</head>
+<body>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">PPNJ</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#e05d3b" stroke-width="1.8">
+          <path d="M6 9a6 6 0 0 1 12 0c0 3.4 1 5 1.6 5.8H4.4C5 14 6 12.4 6 9z"></path>
+          <path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"></path>
+        </svg>
+        <span class="icon-dot"></span>
+      </button>
+
+      <a href="sumber_manusia.html" class="topbar-link hr-link">Sumber Manusia</a>
+
+      <details class="dropdown">
+        <summary class="topbar-link">
+          Waktu Bekerja
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu">
+          <a href="#">Jadual Waktu Bekerja</a>
+          <a href="#">Rekod Kehadiran</a>
+          <a href="#">Tukar Shif</a>
+        </div>
+      </details>
+
+      <details class="dropdown profile-menu">
+        <summary class="profile-summary">
+          <span class="avatar avatar-sm">SA</span>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu profile-dropdown">
+          <div class="profile-dropdown-name">
+            <span class="profile-dropdown-fullname">Staf Test Admin</span>
+            <span class="profile-dropdown-role">Pengurus &middot; Test Cawangan</span>
+          </div>
+          <a href="#">Profil</a>
+          <a href="#">Tukar Kata Laluan</a>
+          <hr>
+          <a href="#" class="logout-link">Log Keluar</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <div class="page">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
+        Dashboard
+      </a>
+      <a href="#" class="nav-item active">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+        Profil Saya
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+        Pengurusan Cuti
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+        Tuntutan
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path></svg>
+        Lebih Masa
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+        Bertugas Luar
+      </a>
+      <a href="#" class="nav-item">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M3.5 9.5h17M8 3v3M16 3v3"></path><circle cx="8.5" cy="14" r="1"></circle><circle cx="12" cy="14" r="1"></circle><circle cx="15.5" cy="14" r="1"></circle></svg>
+        Kalendar Staf
+      </a>
+    </nav>
+
+    <!-- Profile header -->
+    <section class="profile-header-card">
+
+      <div class="cover-banner">
+        <span class="tri tri-1"></span>
+        <span class="tri tri-2"></span>
+        <span class="tri tri-3"></span>
+        <span class="tri tri-4"></span>
+        <span class="tri tri-5"></span>
+      </div>
+
+      <div class="profile-photo-wrap">
+        <div class="profile-photo-ring">
+          <div class="profile-photo">
+            <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#c3cbd1" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"></circle>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="profile-photo-actions">
+          <button class="round-btn round-btn-orange" aria-label="Tukar gambar" title="Tukar gambar">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle><path d="M8 5l1.5-2h5L16 5"></path></svg>
+          </button>
+          <button class="round-btn round-btn-blue" aria-label="Privasi" title="Privasi">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+          </button>
+          <button class="round-btn round-btn-red" aria-label="Buang gambar" title="Buang gambar">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.2"><line x1="6" y1="12" x2="18" y2="12"></line></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="profile-summary-row">
+        <div class="profile-meta-left">
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5f6b76" stroke-width="1.6"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+            <div>
+              <strong>EMP-1237L</strong>
+              <span>No. Pekerja</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5f6b76" stroke-width="1.6"><path d="M12 3l2.6 5.7 6.2.6-4.7 4.2 1.4 6.1L12 16.7 6.5 19.6l1.4-6.1L3.2 9.3l6.2-.6z"></path></svg>
+            <div>
+              <strong>BEKERJA (K)</strong>
+              <span>Status
+                <svg class="edit-pencil" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e8873a" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="profile-meta-right">
+          <span class="profile-fullname">Staf Test Admin</span>
+          <span class="profile-jawatan">Eksekutif</span>
+        </div>
+      </div>
+
+      <!-- Content tabs -->
+      <div class="profile-tabs">
+        <a href="profil.html" class="profile-tab active">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+          Profil
+        </a>
+        <a href="perjawatan.html" class="profile-tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8l8-4 8 4-8 4-8-4z"></path><path d="M4 8v8l8 4 8-4V8"></path></svg>
+          Perjawatan
+        </a>
+        <a href="payslip.html" class="profile-tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 12.5l1.8 1.8L15 10.2"></path></svg>
+          Payslip
+        </a>
+        <a href="cuti.html" class="profile-tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+          Cuti
+        </a>
+        <a href="dokumen_lampiran.html" class="profile-tab">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+          Dokumen Lampiran
+        </a>
+        <a href="#" class="profile-tab profile-tab-end">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4v11M8 11l4 4 4-4"></path><path d="M4 19h16"></path></svg>
+          Muat Turun Profil
+        </a>
+      </div>
+    </section>
+
+    <!-- Verification banner -->
+    <section class="verify-banner">
+      <div class="verify-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+      </div>
+      <div class="verify-text">
+        <span>Maklumat akaun telah disahkan pada</span>
+        <strong>18/08/2026 08:48 AM</strong>
+      </div>
+      <span class="badge-confirmed">Disahkan</span>
+    </section>
+
+    <!-- Maklumat Peribadi -->
+    <section class="info-card">
+      <div class="info-card-header">
+        <h2>Maklumat Peribadi</h2>
+        <button class="icon-edit-btn" title="Kemaskini maklumat peribadi">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg>
+          Kemaskini
+        </button>
+      </div>
+      <div class="field-grid">
+        <div class="field"><span class="field-label">Nama Penuh</span><span class="field-value">Staf Test Admin</span></div>
+        <div class="field"><span class="field-label">No. Kad Pengenalan</span><span class="field-value">••••••-••-1237</span></div>
+        <div class="field"><span class="field-label">Tarikh Lahir</span><span class="field-value">14 Mac 1994</span></div>
+        <div class="field"><span class="field-label">Jantina</span><span class="field-value">Lelaki</span></div>
+        <div class="field"><span class="field-label">Bangsa</span><span class="field-value">Melayu</span></div>
+        <div class="field"><span class="field-label">Agama</span><span class="field-value">Islam</span></div>
+        <div class="field"><span class="field-label">Warganegara</span><span class="field-value">Malaysia</span></div>
+        <div class="field"><span class="field-label">Status Perkahwinan</span><span class="field-value">Berkahwin</span></div>
+        <div class="field"><span class="field-label">No. Telefon</span><span class="field-value">012-345 6789</span></div>
+        <div class="field"><span class="field-label">Emel</span><span class="field-value">staf.test.admin@ppnj.gov.my</span></div>
+        <div class="field field-wide"><span class="field-label">Alamat Semasa</span><span class="field-value">No. 12, Jalan Setia 3, Taman Setia, 81100 Johor Bahru, Johor</span></div>
+      </div>
+    </section>
+
+    <!-- Maklumat Keluarga -->
+    <section class="info-card">
+      <div class="info-card-header">
+        <h2>Maklumat Keluarga</h2>
+      </div>
+
+      <div class="mini-tabs">
+        <input type="radio" name="family-tab" id="tab-pasangan" checked>
+        <input type="radio" name="family-tab" id="tab-ibubapa">
+        <input type="radio" name="family-tab" id="tab-anak">
+        <input type="radio" name="family-tab" id="tab-waris">
+
+        <div class="mini-tabs-nav">
+          <label for="tab-pasangan">Pasangan</label>
+          <label for="tab-ibubapa">Ibu Bapa</label>
+          <label for="tab-anak">Anak-anak <span class="badge-count">0</span></label>
+          <label for="tab-waris">Waris</label>
+        </div>
+
+        <div class="mini-tabs-panel panel-pasangan">
+          <div class="empty-row">
+            <span>Tiada maklumat pasangan direkodkan.</span>
+            <button class="btn-add-row">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Tambah
+            </button>
+          </div>
+        </div>
+
+        <div class="mini-tabs-panel panel-ibubapa">
+          <div class="data-table">
+            <div class="data-table-head">
+              <span>Nama</span>
+              <span>No. Telefon</span>
+              <span>Hubungan</span>
+              <span>Alamat</span>
+              <span></span>
+            </div>
+            <div class="data-table-row">
+              <span>Ahmad bin Ismail</span>
+              <span>013-987 6543</span>
+              <span>Bapa Kandung</span>
+              <span>Kluang, Johor</span>
+              <div class="row-actions">
+                <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+                <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+              </div>
+            </div>
+            <div class="data-table-footer">
+              <button class="btn-add-row">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Tambah Rekod
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mini-tabs-panel panel-anak">
+          <div class="empty-row">
+            <span>Tiada rekod anak ditambah.</span>
+            <button class="btn-add-row">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Tambah
+            </button>
+          </div>
+        </div>
+
+        <div class="mini-tabs-panel panel-waris">
+          <div class="data-table">
+            <div class="data-table-head">
+              <span>Nama</span>
+              <span>No. Telefon</span>
+              <span>Hubungan</span>
+              <span>Alamat</span>
+              <span></span>
+            </div>
+            <div class="data-table-row">
+              <span>Muhammad Ali bin Ismail</span>
+              <span>019-234 5678</span>
+              <span>Abang Kandung</span>
+              <span>Johor</span>
+              <div class="row-actions">
+                <button class="round-btn round-btn-green round-btn-xs" title="Tambah"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+                <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Maklumat Pendidikan -->
+    <section class="info-card">
+      <div class="info-card-header">
+        <h2>Maklumat Pendidikan</h2>
+        <button class="btn-add-row">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Tambah Rekod
+        </button>
+      </div>
+      <div class="data-table">
+        <div class="data-table-head">
+          <span>Peringkat</span>
+          <span>Institusi</span>
+          <span>Bidang / Kursus</span>
+          <span>Tahun Tamat</span>
+          <span></span>
+        </div>
+        <div class="data-table-row">
+          <span>Ijazah Sarjana Muda</span>
+          <span>Universiti Teknologi Malaysia</span>
+          <span>Sains Komputer</span>
+          <span>2016</span>
+          <div class="row-actions">
+            <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+            <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+          </div>
+        </div>
+        <div class="data-table-row">
+          <span>Sijil Pelajaran Malaysia</span>
+          <span>SMK Taman Setia</span>
+          <span>Aliran Sains</span>
+          <span>2012</span>
+          <div class="row-actions">
+            <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+            <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Maklumat Sijil Khas & Kompetensi -->
+    <section class="info-card">
+      <div class="info-card-header">
+        <h2>Maklumat Sijil Khas &amp; Kompetensi</h2>
+        <button class="btn-add-row">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Tambah Rekod
+        </button>
+      </div>
+      <div class="data-table">
+        <div class="data-table-head">
+          <span>Nama Sijil / Kompetensi</span>
+          <span>No. Sijil</span>
+          <span>Tarikh Dikeluarkan</span>
+          <span>Tarikh Tamat Tempoh</span>
+          <span></span>
+        </div>
+        <div class="data-table-row">
+          <span>Sijil Pertolongan Cemas</span>
+          <span>PC-2024-0456</span>
+          <span>02/03/2024</span>
+          <span>02/03/2027</span>
+          <div class="row-actions">
+            <button class="round-btn round-btn-blue round-btn-xs" title="Lihat fail"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path><circle cx="12" cy="12" r="2.5"></circle></svg></button>
+            <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+            <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+          </div>
+        </div>
+        <div class="data-table-row">
+          <span>Kompetensi Keselamatan &amp; Kesihatan Pekerjaan</span>
+          <span>OSH-2023-1189</span>
+          <span>18/11/2023</span>
+          <span>18/11/2026</span>
+          <div class="row-actions">
+            <button class="round-btn round-btn-blue round-btn-xs" title="Lihat fail"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"></path><circle cx="12" cy="12" r="2.5"></circle></svg></button>
+            <button class="round-btn round-btn-orange round-btn-xs" title="Kemaskini"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg></button>
+            <button class="round-btn round-btn-red round-btn-xs" title="Padam"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#fff" stroke-width="2.2"><path d="M5 7h14M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-8 0v12a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7"></path></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Maklumat Bank & Caruman -->
+    <section class="info-card">
+      <div class="info-card-header">
+        <h2>Maklumat Bank &amp; Caruman</h2>
+        <button class="icon-edit-btn" title="Kemaskini maklumat bank">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg>
+          Kemaskini
+        </button>
+      </div>
+      <div class="field-grid">
+        <div class="field"><span class="field-label">Nama Bank</span><span class="field-value">Maybank Berhad</span></div>
+        <div class="field"><span class="field-label">No. Akaun Bank</span><span class="field-value">••••••••4521</span></div>
+        <div class="field"><span class="field-label">No. KWSP</span><span class="field-value">K1234567890</span></div>
+        <div class="field"><span class="field-label">No. PERKESO / SOCSO</span><span class="field-value">S9876543210</span></div>
+        <div class="field"><span class="field-label">No. Cukai Pendapatan (LHDN)</span><span class="field-value">SG12345678090</span></div>
+        <div class="field"><span class="field-label">Kadar Caruman KWSP (Pekerja)</span><span class="field-value">11%</span></div>
+        <div class="field"><span class="field-label">Kadar Caruman KWSP (Majikan)</span><span class="field-value">13%</span></div>
+        <div class="field"><span class="field-label">Status Caruman</span><span class="field-value"><span class="badge-confirmed badge-inline">Aktif</span></span></div>
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>

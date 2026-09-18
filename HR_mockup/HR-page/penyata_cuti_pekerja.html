@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penyata Cuti Pekerja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Plus Jakarta Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); color: #101828; -webkit-font-smoothing: antialiased; }
+
+/* ============ TOP BAR ============ */
+.topbar { background: #ffffff; border-bottom: 1px solid #e5ece9; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; position: sticky; top: 0; z-index: 30; }
+.logo-mark { display: inline-flex; align-items: center; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #00a86b; background: #e3f5ef; padding: 8px 14px; border-radius: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 22px; }
+.icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; border: none; background: transparent; cursor: pointer; }
+.icon-btn:hover { background: #f3f7f6; }
+.icon-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: #e05d3b; border: 1.5px solid #ffffff; }
+.topbar-link { font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; color: #475467; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; }
+.topbar-link::-webkit-details-marker { display: none; }
+.topbar-link:hover { color: #00a86b; }
+.chevron { transition: transform 0.15s ease; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+.dropdown { position: relative; }
+.dropdown summary { list-style: none; }
+.dropdown summary::-webkit-details-marker { display: none; }
+.dropdown-menu { position: absolute; top: calc(100% + 12px); right: 0; background: #ffffff; border: 1px solid #e5ece9; border-radius: 14px; box-shadow: 0 12px 28px rgba(16, 40, 34, 0.12); padding: 8px; min-width: 200px; display: flex; flex-direction: column; gap: 2px; z-index: 40; }
+.dropdown-menu a { display: block; padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 600; color: #344054; text-decoration: none; }
+.dropdown-menu a:hover { background: #f3f7f6; color: #00a86b; }
+.dropdown-menu hr { border: none; border-top: 1px solid #f0f3f2; margin: 6px 2px; }
+.logout-link { color: #d92d20 !important; }
+.logout-link:hover { background: #fef3f2 !important; color: #d92d20 !important; }
+.profile-summary { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #475467; }
+.avatar-sm { width: 34px; height: 34px; border-radius: 10px; font-size: 13px; }
+.profile-dropdown-name { padding: 10px 12px 12px; border-bottom: 1px solid #f0f3f2; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; }
+.profile-dropdown-fullname { font-size: 13.5px; font-weight: 800; color: #101828; }
+.profile-dropdown-role { font-size: 12px; font-weight: 500; color: #98a2b3; }
+
+/* ============ BUTTONS ============ */
+.btn-green { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; background: #00a86b; color: #ffffff; border: none; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap; transition: background 0.15s ease, transform 0.1s ease; box-shadow: 0 4px 10px rgba(0, 168, 107, 0.25); }
+.btn-green:hover { background: #008f5a; }
+.btn-green:active { transform: scale(0.97); }
+.btn-green-sm { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #00a86b; color: #ffffff; border: none; border-radius: 8px; font-family: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background 0.15s ease, transform 0.1s ease; }
+.btn-green-sm:hover { background: #008f5a; }
+.btn-green-sm:active { transform: scale(0.97); }
+
+/* ============ APP LAYOUT & SIDEBAR ============ */
+.app-layout { display: flex; min-height: calc(100vh - 70px); }
+.sidebar { width: 280px; background: #ffffff; border-right: 1px solid #e5ece9; display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+.sidebar-scroll { flex: 1; padding: 0 12px 20px; overflow-y: auto; }
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-section-title { display: block; font-size: 11px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px 8px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475467; text-decoration: none; transition: all 0.15s ease; margin-bottom: 2px; }
+.sidebar-link svg { color: #98a2b3; flex-shrink: 0; }
+.sidebar-link:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-link:hover svg { color: #00a86b; }
+.sidebar-link.active { background: #e3f5ef; color: #00a86b; font-weight: 700; }
+.sidebar-link.active svg { color: #00a86b; }
+.sidebar-link .chevron-right { margin-left: auto; color: #98a2b3; opacity: 0.5; }
+.sidebar-footer { padding: 20px; border-top: 1px solid #f0f3f2; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user-name { font-size: 13px; font-weight: 800; color: #101828; }
+.sidebar-user-role { font-size: 11px; font-weight: 600; color: #98a2b3; text-transform: uppercase; }
+.main-content { flex: 1; padding: 28px; background: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); overflow-y: auto; }
+.sidebar-dropdown summary { list-style: none; cursor: pointer; }
+.sidebar-dropdown summary::-webkit-details-marker { display: none; }
+.sidebar-dropdown[open] > summary .chevron-right { transform: rotate(90deg); }
+.sidebar-submenu { display: flex; flex-direction: column; padding-left: 24px; margin-top: 4px; margin-bottom: 8px; border-left: 2px solid #e5ece9; margin-left: 14px; }
+.sidebar-sublink { display: flex; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; text-decoration: none; border-radius: 6px; transition: all 0.15s ease; }
+.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-sublink.active { background: #e3f5ef; color: #00a86b; font-weight: 700; }
+.sidebar-dropdown > summary.sidebar-sublink { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; border-radius: 6px; cursor: pointer; }
+.sidebar-dropdown > summary.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+
+/* ============ HERO BANNER ============ */
+.hero-banner { position: relative; background: linear-gradient(135deg, #e8f7f3 0%, #f0fdfa 60%, #e3f5ef 100%); border-radius: 16px; padding: 32px 36px; margin-bottom: 24px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.hero-banner-left { position: relative; z-index: 2; }
+.hero-title { font-size: 26px; font-weight: 800; color: #101828; margin-bottom: 10px; letter-spacing: -0.3px; }
+.hero-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: #8a95a0; }
+.hero-breadcrumb a { color: #8a95a0; text-decoration: none; }
+.hero-breadcrumb a:hover { color: #00a86b; }
+.hero-breadcrumb .bc-active { color: #344054; font-weight: 700; }
+.hero-breadcrumb-sep { color: #c3cbd1; font-size: 11px; }
+.hero-illustration { width: 200px; height: 140px; flex-shrink: 0; }
+.hero-illustration svg { width: 100%; height: 100%; }
+
+/* ============ PAGE HEADING ============ */
+.page-heading { margin-bottom: 24px; }
+.page-heading h2 { font-size: 22px; font-weight: 800; color: #101828; margin-bottom: 6px; letter-spacing: -0.3px; }
+.page-heading p { font-size: 13.5px; font-weight: 500; color: #8a95a0; }
+
+/* ============ FILTER BAR ============ */
+.filter-bar { background: #ffffff; border: 1px solid #e5ece9; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.filter-select-wrap { position: relative; flex: 1; min-width: 220px; }
+.filter-select { width: 100%; padding: 12px 42px 12px 16px; border: 1px solid #d7e6e1; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: #344054; background: #ffffff; outline: none; appearance: none; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.filter-select:hover { border-color: #00a86b; }
+.filter-select:focus { border-color: #00a86b; box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.1); }
+.filter-select-wrap::after { content: ""; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #667085; pointer-events: none; }
+
+/* ============ PEKERJA SUMMARY CARD (kuning) ============ */
+.pekerja-card { background: #fff7e6; border: 1px solid #fde68a; border-radius: 14px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.pekerja-avatar { width: 70px; height: 70px; border-radius: 50%; background: #ffffff; border: 3px solid #f5a524; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+.pekerja-avatar svg { width: 100%; height: 100%; }
+.pekerja-info { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+.pekerja-name-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pekerja-name { font-size: 15px; font-weight: 800; color: #101828; letter-spacing: -0.1px; }
+.pekerja-meta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.pekerja-meta-item { font-size: 12.5px; font-weight: 600; color: #8a95a0; text-transform: uppercase; letter-spacing: 0.3px; }
+.pekerja-meta-item strong { color: #344054; font-weight: 800; }
+.pekerja-cawangan { font-size: 12.5px; font-weight: 800; color: #344054; text-transform: uppercase; letter-spacing: 0.3px; }
+.pekerja-card-action { flex-shrink: 0; }
+
+/* ============ STATEMENT SECTION ============ */
+.statement-section { margin-bottom: 32px; }
+.statement-section-title { font-size: 16px; font-weight: 800; color: #101828; margin-bottom: 14px; letter-spacing: -0.1px; }
+
+/* ============ SUMMARY BOXES (3 warna) ============ */
+.summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+.summary-box { padding: 22px 24px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.summary-box-left { display: flex; flex-direction: column; gap: 4px; }
+.summary-box-title { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
+.summary-box-year { font-size: 12px; font-weight: 600; opacity: 0.85; }
+.summary-box-value { font-size: 18px; font-weight: 800; white-space: nowrap; }
+.box-light-blue { background: #e8f4fc; color: #2563eb; }
+.box-light-green { background: #e8f7f3; color: #00a86b; }
+.box-light-red { background: #fdf0ed; color: #dc2626; }
+
+/* ============ DATA TABLE ============ */
+.dt-table-wrap { background: #ffffff; border: 1px solid #e5ece9; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.dt-table { width: 100%; border-collapse: collapse; }
+.dt-table thead th { padding: 12px 16px; text-align: center; font-size: 11px; font-weight: 800; color: #667085; text-transform: uppercase; letter-spacing: 0.4px; background: #f8faf9; border-bottom: 1px solid #e5ece9; white-space: nowrap; }
+.dt-table thead tr.th-2row th { vertical-align: middle; }
+.dt-table thead th.th-no { width: 50px; }
+.dt-table tbody tr { border-bottom: 1px solid #f0f3f2; transition: background 0.15s ease; }
+.dt-table tbody tr:last-child { border-bottom: none; }
+.dt-table tbody tr:hover { background: #fafcfb; }
+.dt-table tbody td { padding: 12px 16px; font-size: 13px; font-weight: 600; color: #344054; text-align: center; }
+.dt-table tbody td.td-left { text-align: left; }
+
+/* Empty row — JUMLAH HARI DIAMBIL */
+.dt-empty-row { background: #f1f5f9 !important; }
+.dt-empty-row td { font-size: 12.5px; font-weight: 800; color: #475467; text-transform: uppercase; letter-spacing: 0.3px; padding: 14px 16px; }
+.dt-empty-row .col-total { text-align: center; color: #101828; }
+.dt-empty-row td.col-span { text-align: center; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; top: 0; border-right: none; border-bottom: 1px solid #e5ece9; }
+  .sidebar-scroll { max-height: 400px; }
+  .main-content { padding: 20px; }
+}
+@media (max-width: 900px) {
+  .summary-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .topbar { padding: 12px 16px; }
+  .topbar-right { gap: 14px; }
+  .hr-link { display: none; }
+  .hero-banner { flex-direction: column; align-items: flex-start; padding: 24px; }
+  .hero-illustration { width: 140px; height: 100px; align-self: flex-end; }
+  .hero-title { font-size: 20px; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-select-wrap { width: 100%; min-width: 0; }
+  .btn-green { justify-content: center; width: 100%; }
+  .pekerja-card { flex-direction: column; align-items: flex-start; }
+  .pekerja-card-action { width: 100%; }
+  .pekerja-card-action .btn-green-sm { width: 100%; justify-content: center; }
+  .dt-table thead { display: none; }
+  .dt-table tbody tr { display: block; padding: 14px 0; }
+  .dt-table tbody td { display: block; text-align: left; padding: 6px 16px; }
+  .dt-table tbody td::before { content: attr(data-label); display: block; font-size: 10.5px; font-weight: 800; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+  .dt-empty-row td::before { display: none; }
+}
+</style>
+</head>
+<body>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo"><span class="logo-mark">PPNJ</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#e05d3b" stroke-width="1.8">
+          <path d="M6 9a6 6 0 0 1 12 0c0 3.4 1 5 1.6 5.8H4.4C5 14 6 12.4 6 9z"></path>
+          <path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"></path>
+        </svg>
+        <span class="icon-dot"></span>
+      </button>
+      <a href="index.html" class="topbar-link hr-link">Profil</a>
+      <details class="dropdown profile-menu">
+        <summary class="profile-summary">
+          <span class="avatar avatar-sm">SA</span>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu profile-dropdown">
+          <div class="profile-dropdown-name">
+            <span class="profile-dropdown-fullname">Staf Test Admin</span>
+            <span class="profile-dropdown-role">Pengurus &middot; Test Cawangan</span>
+          </div>
+          <a href="profil.html">Profil</a>
+          <a href="#">Tukar Kata Laluan</a>
+          <hr>
+          <a href="#" class="logout-link">Log Keluar</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <!-- App Layout with Sidebar -->
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-section">
+          <span class="sidebar-section-title"></span>
+          <a href="sumber_manusia.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
+            Dashboard
+          </a>
+          <a href="kalendar.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+            Kalendar
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Sumber Manusia</span>
+          
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Profil
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="senarai_pekerja.html" class="sidebar-sublink">Senarai Pekerja</a>
+              <a href="daftar_pekerja.html" class="sidebar-sublink">Daftar Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown" open>
+            <summary class="sidebar-link active">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+              Cuti Pekerja
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_cuti_terkini.html" class="sidebar-sublink">Permohonan Cuti Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan Cuti</a>
+              <a href="#" class="sidebar-sublink">Permohonan GCR & Cuti Dibawa Kehadapan</a>
+              <a href="#" class="sidebar-sublink">Permohonan Pengeluaran</a>
+              <a href="bilangan_cuti_pekerja.html" class="sidebar-sublink">Bilangan Cuti Pekerja</a>
+              <a href="penyata_cuti_pekerja.html" class="sidebar-sublink active">Penyata Cuti Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+              Bertugas Luar Kawasan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_bertugas_luar.html" class="sidebar-sublink">Permohonan Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+              Tuntutan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="tuntutan_rawatan_terkini.html" class="sidebar-sublink">Tuntutan Rawatan</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Lebih Masa Kerja</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Syif</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Perjalanan</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Perpindahan</a>
+            </div>
+          </details>
+
+          <a href="payslip_pekerja.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 12.5l1.8 1.8L15 10.2"></path></svg>
+            Payslip
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path></svg>
+            Waktu Bekerja
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Pentadbir Sistem</span>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Tetapan
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Kumpulan Pengguna
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-user-name">STAF_TEST_ADMIN</span>
+        <span class="sidebar-user-role">PENGURUS</span>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <div class="hero-banner-left">
+          <h1 class="hero-title">Penyata Cuti Pekerja</h1>
+          <div class="hero-breadcrumb">
+            <a href="sumber_manusia.html">Dashboard</a>
+            <span class="hero-breadcrumb-sep">•</span>
+            <a href="#">Cuti Pekerja</a>
+            <span class="hero-breadcrumb-sep">•</span>
+            <span class="bc-active">Penyata Cuti Pekerja</span>
+          </div>
+        </div>
+        <div class="hero-illustration">
+          <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="30" width="120" height="100" rx="8" fill="#ffffff" stroke="#cfe3db" stroke-width="1.5"/>
+            <rect x="30" y="30" width="120" height="22" rx="8" fill="#f5a524"/>
+            <rect x="30" y="45" width="120" height="7" fill="#f5a524"/>
+            <g fill="#dbeafe">
+              <rect x="42" y="62" width="14" height="12" rx="2"/>
+              <rect x="62" y="62" width="14" height="12" rx="2"/>
+              <rect x="82" y="62" width="14" height="12" rx="2"/>
+              <rect x="102" y="62" width="14" height="12" rx="2"/>
+              <rect x="122" y="62" width="14" height="12" rx="2"/>
+              <rect x="42" y="80" width="14" height="12" rx="2"/>
+              <rect x="82" y="80" width="14" height="12" rx="2"/>
+              <rect x="122" y="80" width="14" height="12" rx="2"/>
+              <rect x="42" y="98" width="14" height="12" rx="2"/>
+              <rect x="62" y="98" width="14" height="12" rx="2"/>
+              <rect x="102" y="98" width="14" height="12" rx="2"/>
+            </g>
+            <rect x="62" y="80" width="14" height="12" rx="2" fill="#f5a524"/>
+            <rect x="102" y="80" width="14" height="12" rx="2" fill="#f5a524"/>
+            <circle cx="160" cy="55" r="9" fill="#f5a524"/>
+            <circle cx="160" cy="55" r="6" fill="#ffd7a1"/>
+            <path d="M148 90 Q160 60 172 90 L172 120 L148 120 Z" fill="#1e3a4c"/>
+            <rect x="148" y="118" width="10" height="14" fill="#f5a524"/>
+            <rect x="162" y="118" width="10" height="14" fill="#f5a524"/>
+            <path d="M168 80 L185 65" stroke="#f5a524" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </section>
+
+      <!-- Page Heading -->
+      <div class="page-heading">
+        <h2>Penyata Cuti Pekerja</h2>
+        <p>Senarai penyata cuti pekerja mengikut tahun.</p>
+      </div>
+
+      <!-- Filter Bar -->
+      <section class="filter-bar">
+        <div class="filter-select-wrap">
+          <select class="filter-select">
+            <option>CAWANGAN TEKNOLOGI MAKLUMAT</option>
+            <option>IBU PEJABAT</option>
+            <option>TEST CAWANGAN</option>
+            <option>CAWANGAN JOHOR</option>
+            <option>CAWANGAN KUALA LUMPUR</option>
+          </select>
+        </div>
+
+        <div class="filter-select-wrap">
+          <select class="filter-select">
+            <option>PILIH PEKERJA...</option>
+            <option>AZMI BIN IDRIS</option>
+            <option>ERWAN BIN RAMLI</option>
+            <option>FAKHRAN BIN BAHROM</option>
+            <option>STAF TEST ADMIN</option>
+          </select>
+        </div>
+
+        <div class="filter-select-wrap" style="flex: 0 0 140px; min-width: 140px;">
+          <select class="filter-select">
+            <option>2026</option>
+            <option>2025</option>
+            <option>2024</option>
+          </select>
+        </div>
+
+        <button class="btn-green">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 20l1-4L15.5 5.5a1.5 1.5 0 0 1 2.1 0l.9.9a1.5 1.5 0 0 1 0 2.1L8 19l-4 1z"></path></svg>
+          Papar Penyata
+        </button>
+      </section>
+
+      <!-- Pekerja Summary Card (kuning) -->
+      <section class="pekerja-card">
+        <div class="pekerja-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c3cbd1" stroke-width="1.5">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
+          </svg>
+        </div>
+        <div class="pekerja-info">
+          <div class="pekerja-name-row">
+            <span class="pekerja-name">EKSEKUTIF</span>
+            <span class="pekerja-meta-item">No. Pekerja: <strong>1237L</strong></span>
+          </div>
+          <div class="pekerja-cawangan">CAWANGAN TEKNOLOGI MAKLUMAT</div>
+        </div>
+        <div class="pekerja-card-action">
+          <button class="btn-green-sm">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v11M8 11l4 4 4-4"></path><path d="M4 19h16"></path></svg>
+            Muat Turun
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ Jenis Cuti: Cuti Rehat ============ -->
+      <section class="statement-section">
+        <h3 class="statement-section-title">Jenis Cuti: Cuti Rehat</h3>
+
+        <!-- Summary Boxes -->
+        <div class="summary-row">
+          <div class="summary-box box-light-blue">
+            <div class="summary-box-left">
+              <span class="summary-box-title">BAKI CUTI REHAT</span>
+              <span class="summary-box-year">TAHUN: 2025</span>
+            </div>
+            <span class="summary-box-value">0 HARI</span>
+          </div>
+          <div class="summary-box box-light-green">
+            <div class="summary-box-left">
+              <span class="summary-box-title">KELAYAKAN CUTI REHAT</span>
+              <span class="summary-box-year">TAHUN: 2026</span>
+            </div>
+            <span class="summary-box-value">8 HARI</span>
+          </div>
+          <div class="summary-box box-light-red">
+            <div class="summary-box-left">
+              <span class="summary-box-title">JUMLAH CUTI REHAT</span>
+              <span class="summary-box-year">TAHUN: 2026</span>
+            </div>
+            <span class="summary-box-value">8 HARI</span>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="dt-table-wrap">
+          <table class="dt-table">
+            <thead>
+              <tr class="th-2row">
+                <th class="th-no" rowspan="2">#</th>
+                <th colspan="2">TEMPOH</th>
+                <th rowspan="2">JUMLAH KELAYAKAN CUTI</th>
+                <th rowspan="2">BILANGAN HARI CUTI YANG DIPOHON</th>
+                <th rowspan="2">BAKI KELAYAKAN CUTI</th>
+              </tr>
+              <tr class="th-2row">
+                <th>DARI</th>
+                <th>HINGGA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="dt-empty-row">
+                <td colspan="6" class="col-total">JUMLAH HARI DIAMBIL &nbsp;&nbsp; 0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ Jenis Cuti: Cuti Sakit ============ -->
+      <section class="statement-section">
+        <h3 class="statement-section-title">Jenis Cuti: Cuti Sakit</h3>
+
+        <div class="dt-table-wrap">
+          <table class="dt-table">
+            <thead>
+              <tr class="th-2row">
+                <th class="th-no" rowspan="2">#</th>
+                <th colspan="2">TEMPOH</th>
+                <th rowspan="2">JUMLAH KELAYAKAN CUTI</th>
+                <th rowspan="2">BILANGAN HARI CUTI YANG DIPOHON</th>
+                <th rowspan="2">BAKI KELAYAKAN CUTI</th>
+              </tr>
+              <tr class="th-2row">
+                <th>DARI</th>
+                <th>HINGGA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="dt-empty-row">
+                <td colspan="6" class="col-total">JUMLAH HARI DIAMBIL &nbsp;&nbsp; 0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

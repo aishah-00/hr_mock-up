@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senarai Pekerja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Plus Jakarta Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); color: #101828; -webkit-font-smoothing: antialiased; }
+
+/* ============ TOP BAR ============ */
+.topbar { background: #ffffff; border-bottom: 1px solid #e5ece9; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; position: sticky; top: 0; z-index: 30; }
+.logo-mark { display: inline-flex; align-items: center; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #00a86b; background: #e3f5ef; padding: 8px 14px; border-radius: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 22px; }
+.icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; border: none; background: transparent; cursor: pointer; }
+.icon-btn:hover { background: #f3f7f6; }
+.icon-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: #e05d3b; border: 1.5px solid #ffffff; }
+.topbar-link { font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; color: #475467; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; }
+.topbar-link::-webkit-details-marker { display: none; }
+.topbar-link:hover { color: #00a86b; }
+.chevron { transition: transform 0.15s ease; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+.dropdown { position: relative; }
+.dropdown summary { list-style: none; }
+.dropdown summary::-webkit-details-marker { display: none; }
+.dropdown-menu { position: absolute; top: calc(100% + 12px); right: 0; background: #ffffff; border: 1px solid #e5ece9; border-radius: 14px; box-shadow: 0 12px 28px rgba(16, 40, 34, 0.12); padding: 8px; min-width: 200px; display: flex; flex-direction: column; gap: 2px; z-index: 40; }
+.dropdown-menu a { display: block; padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 600; color: #344054; text-decoration: none; }
+.dropdown-menu a:hover { background: #f3f7f6; color: #00a86b; }
+.dropdown-menu hr { border: none; border-top: 1px solid #f0f3f2; margin: 6px 2px; }
+.logout-link { color: #d92d20 !important; }
+.logout-link:hover { background: #fef3f2 !important; color: #d92d20 !important; }
+.profile-summary { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #475467; }
+.avatar-sm { width: 34px; height: 34px; border-radius: 10px; font-size: 13px; }
+.profile-dropdown-name { padding: 10px 12px 12px; border-bottom: 1px solid #f0f3f2; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; }
+.profile-dropdown-fullname { font-size: 13.5px; font-weight: 800; color: #101828; }
+.profile-dropdown-role { font-size: 12px; font-weight: 500; color: #98a2b3; }
+
+/* ============ BUTTONS ============ */
+.btn-add-row { display: flex; align-items: center; gap: 6px; background: #00a86b; color: #ffffff; border: none; font-size: 12.5px; font-weight: 700; padding: 9px 16px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+.btn-add-row:hover { background: #008f5a; }
+.btn-outline { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid #d7e6e1; border-radius: 8px; background: #ffffff; font-size: 12.5px; font-weight: 700; color: #475467; cursor: pointer; text-decoration: none; transition: all 0.15s ease; }
+.btn-outline:hover { background: #f1f5f9; }
+.btn-outline-blue { color: #2f8fe0; border-color: #bce0fd; }
+.btn-outline-blue:hover { background: #eff6ff; }
+
+/* ============ APP LAYOUT & SIDEBAR ============ */
+.app-layout { display: flex; min-height: calc(100vh - 70px); }
+.sidebar { width: 280px; background: #ffffff; border-right: 1px solid #e5ece9; display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+.sidebar-scroll { flex: 1; padding: 0 12px 20px; overflow-y: auto; }
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-section-title { display: block; font-size: 11px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px 8px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475467; text-decoration: none; transition: all 0.15s ease; margin-bottom: 2px; }
+.sidebar-link svg { color: #98a2b3; flex-shrink: 0; }
+.sidebar-link:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-link:hover svg { color: #00a86b; }
+.sidebar-link.active { background: #e3f5ef; color: #00a86b; font-weight: 700; }
+.sidebar-link.active svg { color: #00a86b; }
+.sidebar-link .chevron-right { margin-left: auto; color: #98a2b3; opacity: 0.5; }
+.sidebar-footer { padding: 20px; border-top: 1px solid #f0f3f2; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user-name { font-size: 13px; font-weight: 800; color: #101828; }
+.sidebar-user-role { font-size: 11px; font-weight: 600; color: #98a2b3; text-transform: uppercase; }
+.main-content { flex: 1; padding: 28px; background: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); overflow-y: auto; }
+.sidebar-dropdown summary { list-style: none; cursor: pointer; }
+.sidebar-dropdown summary::-webkit-details-marker { display: none; }
+.sidebar-dropdown[open] > summary .chevron-right { transform: rotate(90deg); }
+.sidebar-submenu { display: flex; flex-direction: column; padding-left: 24px; margin-top: 4px; margin-bottom: 8px; border-left: 2px solid #e5ece9; margin-left: 14px; }
+.sidebar-sublink { display: flex; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; text-decoration: none; border-radius: 6px; transition: all 0.15s ease; }
+.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-submenu .sidebar-submenu { padding-left: 12px; margin-left: 6px; border-left: 1px solid #e5ece9; }
+.sidebar-dropdown > summary.sidebar-sublink { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; border-radius: 6px; cursor: pointer; }
+.sidebar-dropdown > summary.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+
+/* ============ SENARAI PEKERJA PAGE ============ */
+.workers-page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
+.workers-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+.workers-stats { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 90px; }
+.workers-content { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.calendar-title { font-size: 28px; font-weight: 800; color: #101828; margin-bottom: 4px; letter-spacing: -0.3px; }
+.calendar-subtitle { font-size: 13.5px; font-weight: 500; color: #8a95a0; }
+
+/* Ringkasan Akaun */
+.stat-summary-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 20px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.stat-summary-title { font-size: 14px; font-weight: 800; color: #101828; margin-bottom: 14px; }
+.stat-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-summary-item { background: #f8faf9; border: 1px solid #eef0f1; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 3px; }
+.stat-summary-value { font-size: 22px; font-weight: 800; color: #101828; line-height: 1; }
+.stat-summary-label { font-size: 11px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.3px; }
+.stat-value-green { color: #00a86b; }
+.stat-value-red { color: #dc2626; }
+.stat-value-grey { color: #64748b; }
+
+/* Stat Block */
+.stat-block { border-radius: 18px; padding: 22px 20px; color: #ffffff; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); }
+.stat-block-title { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 4px; letter-spacing: -0.1px; }
+.stat-block-subtitle { font-size: 11.5px; font-weight: 500; color: rgba(255, 255, 255, 0.85); margin-bottom: 16px; line-height: 1.4; }
+.stat-block-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.stat-block-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 11.5px; font-weight: 700; letter-spacing: 0.2px; }
+.stat-item-label { color: rgba(255, 255, 255, 0.95); text-transform: uppercase; flex: 1; }
+.stat-item-value { background: #ffffff; color: #101828; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 999px; min-width: 36px; text-align: center; }
+.stat-block-blue { background: linear-gradient(145deg, #3b82f6, #2563eb); }
+.stat-block-red { background: linear-gradient(145deg, #f87171, #ef4444); }
+.stat-block-yellow { background: linear-gradient(145deg, #fbbf24, #f59e0b); }
+
+/* Filter Card */
+.filter-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 20px 24px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.filter-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
+.filter-group { display: flex; flex-direction: column; gap: 6px; }
+.filter-group-search { grid-column: 1 / -1; }
+.filter-label { font-size: 11.5px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.3px; }
+.filter-select { padding: 10px 14px; border: 1px solid #d7e6e1; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: #344054; background: #ffffff; outline: none; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.filter-select:hover { border-color: #00a86b; }
+.filter-select:focus { border-color: #00a86b; box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.1); }
+.search-input-wrap { display: flex; align-items: center; gap: 10px; padding: 0 14px; border: 1px solid #d7e6e1; border-radius: 10px; background: #ffffff; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.search-input-wrap:focus-within { border-color: #00a86b; box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.1); }
+.search-input { flex: 1; border: none; outline: none; padding: 10px 0; font-family: inherit; font-size: 13px; font-weight: 600; color: #344054; background: transparent; }
+.search-input::placeholder { color: #b0b8bd; font-weight: 500; }
+.filter-actions { display: flex; justify-content: flex-end; gap: 10px; padding-top: 4px; }
+
+/* Workers Grid */
+.workers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.worker-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+.worker-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(16, 40, 34, 0.08); border-color: #c8e6d9; }
+.worker-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.worker-avatar { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #ffffff; letter-spacing: 0.3px; flex-shrink: 0; }
+.worker-avatar-teal { background: linear-gradient(145deg, #34d399, #00a86b); }
+.worker-avatar-blue { background: linear-gradient(145deg, #60a5fa, #2563eb); }
+.worker-avatar-orange { background: linear-gradient(145deg, #fbbf24, #d97706); }
+.worker-avatar-purple { background: linear-gradient(145deg, #a78bfa, #7c3aed); }
+.worker-avatar-pink { background: linear-gradient(145deg, #f472b6, #db2777); }
+.worker-avatar-grey { background: linear-gradient(145deg, #cbd5e1, #64748b); }
+.worker-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.worker-badge { font-size: 10.5px; font-weight: 800; padding: 4px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+.worker-badge-active { background: #e8f7f3; color: #047857; }
+.worker-badge-inactive { background: #fef2f2; color: #b91c1c; }
+.worker-badge-draft { background: #f1f5f9; color: #475467; }
+.worker-badge-working { background: #e3f5ef; color: #0f766e; }
+.worker-badge-retired { background: #eef1f0; color: #475467; }
+.worker-info { display: flex; flex-direction: column; gap: 6px; }
+.worker-name { font-size: 16px; font-weight: 800; color: #101828; letter-spacing: -0.1px; line-height: 1.3; }
+.worker-position { font-size: 12.5px; font-weight: 700; color: #00a86b; text-transform: uppercase; letter-spacing: 0.4px; }
+.worker-meta { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; padding-top: 12px; border-top: 1px solid #f0f3f2; }
+.worker-meta-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: #667085; }
+.worker-card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; padding-top: 4px; }
+.worker-card-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 700; text-decoration: none; transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease; white-space: nowrap; cursor: pointer; }
+.worker-card-btn:active { transform: scale(0.97); }
+.worker-card-btn-primary { background: #00a86b; border: 1px solid #00a86b; color: #ffffff; }
+.worker-card-btn-primary:hover { background: #008f5a; border-color: #008f5a; }
+.worker-card-btn-secondary { background: #f6faf9; border: 1px solid #d7e6e1; color: #00a86b; }
+.worker-card-btn-secondary:hover { background: #eaf5f2; border-color: #b8e0d0; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1200px) {
+  .workers-layout { grid-template-columns: 260px 1fr; }
+  .workers-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 1100px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; top: 0; border-right: none; border-bottom: 1px solid #e5ece9; }
+  .sidebar-scroll { max-height: 400px; }
+  .main-content { padding: 20px; }
+  .workers-grid { grid-template-columns: repeat(2, 1fr); }
+  .filter-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 1024px) {
+  .workers-layout { grid-template-columns: 1fr; }
+  .workers-stats { position: static; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .stat-summary-card { grid-column: 1 / -1; }
+}
+@media (max-width: 768px) {
+  .topbar { padding: 12px 16px; }
+  .topbar-right { gap: 14px; }
+  .hr-link { display: none; }
+  .workers-stats { grid-template-columns: 1fr; }
+  .filter-row { grid-template-columns: 1fr; }
+  .workers-grid { grid-template-columns: 1fr; }
+  .filter-actions { justify-content: stretch; }
+  .filter-actions .btn-outline { flex: 1; justify-content: center; }
+  .workers-page-header { flex-direction: column; align-items: stretch; }
+  .workers-page-header .btn-add-row { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .worker-card-actions { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">PPNJ</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#e05d3b" stroke-width="1.8">
+          <path d="M6 9a6 6 0 0 1 12 0c0 3.4 1 5 1.6 5.8H4.4C5 14 6 12.4 6 9z"></path>
+          <path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"></path>
+        </svg>
+        <span class="icon-dot"></span>
+      </button>
+
+      <a href="../index.html" class="topbar-link hr-link">Profil</a>
+
+      <details class="dropdown profile-menu">
+        <summary class="profile-summary">
+          <span class="avatar avatar-sm">SA</span>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu profile-dropdown">
+          <div class="profile-dropdown-name">
+            <span class="profile-dropdown-fullname">Staf Test Admin</span>
+            <span class="profile-dropdown-role">Pengurus &middot; Test Cawangan</span>
+          </div>
+          <a href="profil.html">Profil</a>
+          <a href="#">Tukar Kata Laluan</a>
+          <hr>
+          <a href="#" class="logout-link">Log Keluar</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <!-- App Layout with Sidebar -->
+  <div class="app-layout">
+    
+    <!-- Sidebar Navigasi -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-section">
+          <span class="sidebar-section-title"></span>
+          <a href="sumber_manusia.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
+            Dashboard
+          </a>
+          <a href="kalendar.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+            Kalendar
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Sumber Manusia</span>
+          
+          <details class="sidebar-dropdown" open>
+            <summary class="sidebar-link active">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Profil
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="senarai_pekerja.html" class="sidebar-sublink active">Senarai Pekerja</a>
+              <a href="daftar_pekerja.html" class="sidebar-sublink">Daftar Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+              Cuti Pekerja
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_cuti_terkini.html" class="sidebar-sublink">Permohonan Cuti Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan Cuti</a>
+              <a href="#" class="sidebar-sublink">Permohonan GCR & Cuti Dibawa Kehadapan</a>
+              <a href="#" class="sidebar-sublink">Permohonan Pengeluaran</a>
+              <a href="bilangan_cuti_pekerja.html" class="sidebar-sublink">Bilangan Cuti Pekerja</a>
+              <a href="penyata_cuti_pekerja.html" class="sidebar-sublink">Penyata Cuti Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+              Bertugas Luar Kawasan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_bertugas_luar.html" class="sidebar-sublink">Permohonan Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+              Tuntutan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="tuntutan_rawatan_terkini.html" class="sidebar-sublink">Tuntutan Rawatan</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Lebih Masa Kerja</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Syif</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Perjalanan</a>
+              <a href="#" class="sidebar-sublink">Tuntutan Elaun Perpindahan</a>
+            </div>
+          </details>
+
+          <a href="payslip_pekerja.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 12.5l1.8 1.8L15 10.2"></path></svg>
+            Payslip
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path></svg>
+            Waktu Bekerja
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Pentadbir Sistem</span>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Tetapan
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Kumpulan Pengguna
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-user-name">STAF_TEST_ADMIN</span>
+        <span class="sidebar-user-role">PENGURUS</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+
+        <!-- Page Header -->
+        <header class="workers-page-header">
+          <div>
+            <h1 class="calendar-title">Senarai Pekerja</h1>
+            <p class="calendar-subtitle">16 pekerja berdaftar dalam sistem.</p>
+          </div>
+          <button class="btn-add-row">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Daftar Pekerja
+          </button>
+        </header>
+
+        <!-- Layout: Stats kiri + Content kanan -->
+        <div class="workers-layout">
+
+          <!-- ========== KIRI: STATISTIK ========== -->
+          <aside class="workers-stats">
+
+            <!-- Ringkasan Akaun -->
+            <div class="stat-summary-card">
+              <h3 class="stat-summary-title">Ringkasan Akaun</h3>
+              <div class="stat-summary-grid">
+                <div class="stat-summary-item">
+                  <span class="stat-summary-value">16</span>
+                  <span class="stat-summary-label">Jumlah Pekerja</span>
+                </div>
+                <div class="stat-summary-item">
+                  <span class="stat-summary-value stat-value-green">14</span>
+                  <span class="stat-summary-label">Akaun Aktif</span>
+                </div>
+                <div class="stat-summary-item">
+                  <span class="stat-summary-value stat-value-red">1</span>
+                  <span class="stat-summary-label">Akaun Disekat</span>
+                </div>
+                <div class="stat-summary-item">
+                  <span class="stat-summary-value stat-value-grey">1</span>
+                  <span class="stat-summary-label">Akaun Draf</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Perkhidmatan (Biru) -->
+            <div class="stat-block stat-block-blue">
+              <h3 class="stat-block-title">Status Perkhidmatan</h3>
+              <p class="stat-block-subtitle">Bilangan Pekerja mengikut status perkhidmatan</p>
+              <ul class="stat-block-list">
+                <li><span class="stat-item-label">BEKERJA (K)</span><span class="stat-item-value">16</span></li>
+                <li><span class="stat-item-label">BERSARA (S)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">BERHENTI (H)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">MENINGGAL DUNIA (MD)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">PELATIH (PL)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">SYARIKAT SUBSIDIARI (SS)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">TAMAT TEMPOH KONTRAK (TTK)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">TAMAT LATIHAN PROTEGE (TLP)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">DITAMATKAN PERKHIDMATAN (DP)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">DISERAP LANTIKAN TETAP (DS)</span><span class="stat-item-value">0</span></li>
+              </ul>
+            </div>
+
+            <!-- Skim Jawatan (Merah) -->
+            <div class="stat-block stat-block-red">
+              <h3 class="stat-block-title">Skim Jawatan</h3>
+              <p class="stat-block-subtitle">Bilangan Pekerja mengikut skim jawatan</p>
+              <ul class="stat-block-list">
+                <li><span class="stat-item-label">PENGURUSAN TERTINGGI</span><span class="stat-item-value">3</span></li>
+                <li><span class="stat-item-label">PENGURUSAN</span><span class="stat-item-value">8</span></li>
+                <li><span class="stat-item-label">EKSEKUTIF</span><span class="stat-item-value">4</span></li>
+                <li><span class="stat-item-label">SOKONGAN</span><span class="stat-item-value">1</span></li>
+              </ul>
+            </div>
+
+            <!-- Gred Jawatan (Kuning) -->
+            <div class="stat-block stat-block-yellow">
+              <h3 class="stat-block-title">Gred Jawatan</h3>
+              <p class="stat-block-subtitle">Bilangan Pekerja mengikut gred jawatan</p>
+              <ul class="stat-block-list">
+                <li><span class="stat-item-label">LK6 (SPLK)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">LK7 (SPLK)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">LK8 (SPLK)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">LK9 (SPLK)</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">P4</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">P5</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">P7</span><span class="stat-item-value">1</span></li>
+                <li><span class="stat-item-label">P8</span><span class="stat-item-value">3</span></li>
+                <li><span class="stat-item-label">P9</span><span class="stat-item-value">4</span></li>
+                <li><span class="stat-item-label">PROTEGE</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">PT10</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">PT11</span><span class="stat-item-value">0</span></li>
+                <li><span class="stat-item-label">S1</span><span class="stat-item-value">4</span></li>
+                <li><span class="stat-item-label">S2</span><span class="stat-item-value">2</span></li>
+                <li><span class="stat-item-label">S3</span><span class="stat-item-value">1</span></li>
+                <li><span class="stat-item-label">S4</span><span class="stat-item-value">1</span></li>
+                <li><span class="stat-item-label">S5</span><span class="stat-item-value">0</span></li>
+              </ul>
+            </div>
+
+          </aside>
+
+          <!-- ========== KANAN: FILTER + KAD PEKERJA ========== -->
+          <div class="workers-content">
+
+            <!-- Filter Bar -->
+            <section class="filter-card">
+              <div class="filter-row">
+                <div class="filter-group">
+                  <label class="filter-label">Cawangan</label>
+                  <select class="filter-select">
+                    <option>Semua Cawangan</option>
+                    <option>Ibu Pejabat</option>
+                    <option>Test Cawangan</option>
+                    <option>Cawangan Johor</option>
+                    <option>Cawangan Kuala Lumpur</option>
+                  </select>
+                </div>
+
+                <div class="filter-group">
+                  <label class="filter-label">Status Akaun</label>
+                  <select class="filter-select">
+                    <option>Semua Status</option>
+                    <option>Aktif</option>
+                    <option>Tidak Aktif</option>
+                    <option>Disekat</option>
+                    <option>Draf</option>
+                  </select>
+                </div>
+
+                <div class="filter-group">
+                  <label class="filter-label">Status Perkhidmatan</label>
+                  <select class="filter-select">
+                    <option>Semua Status</option>
+                    <option>Bekerja</option>
+                    <option>Bersara</option>
+                    <option>Berhenti</option>
+                    <option>Pelatih</option>
+                  </select>
+                </div>
+
+                <div class="filter-group filter-group-search">
+                  <label class="filter-label">Carian Nama / ID</label>
+                  <div class="search-input-wrap">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#98a2b3" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+                    <input type="text" class="search-input" placeholder="Cari nama pekerja atau ID...">
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-actions">
+                <button class="btn-outline btn-outline-blue" style="padding: 9px 16px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16M7 12h10M10 20h4"></path></svg>
+                  Tapis
+                </button>
+                <button class="btn-outline" style="padding: 9px 16px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"></path></svg>
+                  Reset
+                </button>
+              </div>
+            </section>
+
+            <!-- Worker Cards Grid -->
+            <section class="workers-grid">
+
+              <!-- Kad 1 -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-teal">SA</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-active">Aktif</span>
+                    <span class="worker-badge worker-badge-working">Bekerja</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Staf Test Admin</h3>
+                  <p class="worker-position">Pengurus</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1237L</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Test Cawangan</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+              <!-- Kad 2 -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-blue">K</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-active">Aktif</span>
+                    <span class="worker-badge worker-badge-working">Bekerja</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Khairunisah binti Ali</h3>
+                  <p class="worker-position">Eksekutif</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1238K</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Test Cawangan</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+              <!-- Kad 3 -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-orange">H</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-active">Aktif</span>
+                    <span class="worker-badge worker-badge-working">Bekerja</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Hacila binti Hassan</h3>
+                  <p class="worker-position">Kerani</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1239H</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Ibu Pejabat</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+              <!-- Kad 4 -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-purple">MS</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-active">Aktif</span>
+                    <span class="worker-badge worker-badge-working">Bekerja</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Mohd Sabri bin Omar</h3>
+                  <p class="worker-position">Penyelia</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1240M</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Cawangan Johor</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+              <!-- Kad 5 - Disekat/Bersara -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-grey">A</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-inactive">Disekat</span>
+                    <span class="worker-badge worker-badge-retired">Bersara</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Ahmad bin Ismail</h3>
+                  <p class="worker-position">Kerani Kanan</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1111A</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Ibu Pejabat</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+              <!-- Kad 6 - Draf -->
+              <div class="worker-card">
+                <div class="worker-card-top">
+                  <div class="worker-avatar worker-avatar-pink">N</div>
+                  <div class="worker-badges">
+                    <span class="worker-badge worker-badge-draft">Draf</span>
+                    <span class="worker-badge worker-badge-working">Bekerja</span>
+                  </div>
+                </div>
+                <div class="worker-info">
+                  <h3 class="worker-name">Norhayati binti Rahman</h3>
+                  <p class="worker-position">Eksekutif Sumber Manusia</p>
+                  <div class="worker-meta">
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><rect x="4" y="7" width="16" height="12" rx="2"></rect><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path></svg>
+                      <span>EMP-1241N</span>
+                    </div>
+                    <div class="worker-meta-item">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#98a2b3" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+                      <span>Ibu Pejabat</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="worker-card-actions">
+                  <a href="profil.html" class="worker-card-btn worker-card-btn-primary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>
+                    Papar Profil
+                  </a>
+                  <a href="akaun_pekerja.html" class="worker-card-btn worker-card-btn-secondary">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Papar Akaun
+                  </a>
+                </div>
+              </div>
+
+            </section>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

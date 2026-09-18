@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Plus Jakarta Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); color: #101828; -webkit-font-smoothing: antialiased; }
+
+/* ============ TOP BAR ============ */
+.topbar { background: #ffffff; border-bottom: 1px solid #e5ece9; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; position: sticky; top: 0; z-index: 30; }
+.logo-mark { display: inline-flex; align-items: center; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #00a86b; background: #e3f5ef; padding: 8px 14px; border-radius: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 22px; }
+.icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; border: none; background: transparent; cursor: pointer; }
+.icon-btn:hover { background: #f3f7f6; }
+.icon-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: #e05d3b; border: 1.5px solid #ffffff; }
+.topbar-link { font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; color: #475467; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; }
+.topbar-link::-webkit-details-marker { display: none; }
+.topbar-link:hover { color: #00a86b; }
+.chevron { transition: transform 0.15s ease; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+.dropdown { position: relative; }
+.dropdown summary { list-style: none; }
+.dropdown summary::-webkit-details-marker { display: none; }
+.dropdown-menu { position: absolute; top: calc(100% + 12px); right: 0; background: #ffffff; border: 1px solid #e5ece9; border-radius: 14px; box-shadow: 0 12px 28px rgba(16, 40, 34, 0.12); padding: 8px; min-width: 200px; display: flex; flex-direction: column; gap: 2px; z-index: 40; }
+.dropdown-menu a { display: block; padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 600; color: #344054; text-decoration: none; }
+.dropdown-menu a:hover { background: #f3f7f6; color: #00a86b; }
+.dropdown-menu hr { border: none; border-top: 1px solid #f0f3f2; margin: 6px 2px; }
+.logout-link { color: #d92d20 !important; }
+.logout-link:hover { background: #fef3f2 !important; color: #d92d20 !important; }
+.profile-summary { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #475467; }
+.avatar-sm { width: 34px; height: 34px; border-radius: 10px; font-size: 13px; }
+.profile-dropdown-name { padding: 10px 12px 12px; border-bottom: 1px solid #f0f3f2; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; }
+.profile-dropdown-fullname { font-size: 13.5px; font-weight: 800; color: #101828; }
+.profile-dropdown-role { font-size: 12px; font-weight: 500; color: #98a2b3; }
+
+/* ============ SELECT ============ */
+.payslip-select { padding: 10px 16px; border: 1px solid #d7e6e1; border-radius: 10px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: #344054; background: #ffffff; outline: none; cursor: pointer; }
+
+/* ============ APP LAYOUT & SIDEBAR ============ */
+.app-layout { display: flex; min-height: calc(100vh - 70px); }
+.sidebar { width: 280px; background: #ffffff; border-right: 1px solid #e5ece9; display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+.sidebar-scroll { flex: 1; padding: 0 12px 20px; overflow-y: auto; }
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-section-title { display: block; font-size: 11px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px 8px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475467; text-decoration: none; transition: all 0.15s ease; margin-bottom: 2px; }
+.sidebar-link svg { color: #98a2b3; flex-shrink: 0; }
+.sidebar-link:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-link:hover svg { color: #00a86b; }
+.sidebar-link.active { background: #e3f5ef; color: #00a86b; font-weight: 700; }
+.sidebar-link.active svg { color: #00a86b; }
+.sidebar-link .chevron-right { margin-left: auto; color: #98a2b3; opacity: 0.5; }
+.sidebar-footer { padding: 20px; border-top: 1px solid #f0f3f2; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user-name { font-size: 13px; font-weight: 800; color: #101828; }
+.sidebar-user-role { font-size: 11px; font-weight: 600; color: #98a2b3; text-transform: uppercase; }
+.main-content { flex: 1; padding: 28px; background: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); overflow-y: auto; }
+.sidebar-dropdown summary { list-style: none; cursor: pointer; }
+.sidebar-dropdown summary::-webkit-details-marker { display: none; }
+.sidebar-dropdown[open] > summary .chevron-right { transform: rotate(90deg); }
+.sidebar-submenu { display: flex; flex-direction: column; padding-left: 24px; margin-top: 4px; margin-bottom: 8px; border-left: 2px solid #e5ece9; margin-left: 14px; }
+.sidebar-sublink { display: flex; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; text-decoration: none; border-radius: 6px; transition: all 0.15s ease; }
+.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-submenu .sidebar-submenu { padding-left: 12px; margin-left: 6px; border-left: 1px solid #e5ece9; }
+.sidebar-dropdown > summary.sidebar-sublink { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; border-radius: 6px; cursor: pointer; }
+.sidebar-dropdown > summary.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+
+/* ============ KALENDAR PAGE ============ */
+.calendar-page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+.calendar-title { font-size: 28px; font-weight: 800; color: #101828; margin-bottom: 4px; letter-spacing: -0.3px; }
+.calendar-subtitle { font-size: 13.5px; font-weight: 500; color: #8a95a0; }
+.calendar-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 24px 28px 28px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.calendar-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.calendar-nav-buttons { display: flex; align-items: center; gap: 8px; }
+.calendar-nav-btn { width: 42px; height: 42px; border-radius: 10px; background: #1e3a4c; border: none; color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s ease, transform 0.1s ease; }
+.calendar-nav-btn:hover { background: #2c4f63; }
+.calendar-nav-btn:active { transform: scale(0.95); }
+.calendar-today-btn { padding: 0 18px; height: 42px; border-radius: 10px; background: #6b7c87; border: none; color: #ffffff; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s ease; }
+.calendar-today-btn:hover { background: #5a6b75; }
+.calendar-month-title { font-size: 24px; font-weight: 700; color: #101828; letter-spacing: -0.2px; flex: 1; text-align: right; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #e5ece9; border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
+.calendar-day-head { background: #f8faf9; padding: 14px 12px; text-align: center; font-size: 13px; font-weight: 700; color: #344054; border-bottom: 1px solid #e5ece9; }
+.calendar-cell { min-height: 110px; padding: 10px 10px 12px; border-right: 1px solid #eef0f1; border-bottom: 1px solid #eef0f1; display: flex; flex-direction: column; gap: 4px; position: relative; background: #ffffff; transition: background 0.15s ease; }
+.calendar-cell:nth-child(7n) { border-right: none; }
+.calendar-cell:hover { background: #fafcfb; }
+.calendar-cell-muted { background: #fbfcfb; }
+.calendar-cell-muted .calendar-date { color: #c3cbd1; }
+.calendar-cell-highlight { background: #fefbe8; }
+.calendar-date { font-size: 13px; font-weight: 700; color: #344054; margin-bottom: 4px; align-self: flex-end; }
+.calendar-events { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+.cal-event { font-size: 11.5px; font-weight: 700; padding: 5px 9px; border-radius: 6px; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; cursor: pointer; transition: filter 0.15s ease; }
+.cal-event:hover { filter: brightness(1.1); }
+.cal-event-leave { background: #2c7be5; }
+.cal-event-sick { background: #c2185b; }
+.cal-event-norecord { background: #7ed957; color: #0e3a10; }
+.cal-event-maternity { background: #1e3a8a; }
+.cal-event-travel { background: #9c1145; }
+.cal-event-public { background: #0aa06e; }
+.calendar-legend { display: flex; flex-wrap: wrap; gap: 10px 22px; padding-top: 16px; border-top: 1px solid #f0f3f2; }
+.calendar-legend .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: #475467; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+.swatch-leave { background: #2c7be5; }
+.swatch-sick { background: #c2185b; }
+.swatch-norecord { background: #7ed957; }
+.swatch-maternity { background: #1e3a8a; }
+.swatch-travel { background: #9c1145; }
+.swatch-public { background: #0aa06e; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; top: 0; border-right: none; border-bottom: 1px solid #e5ece9; }
+  .sidebar-scroll { max-height: 400px; }
+  .main-content { padding: 20px; }
+}
+@media (max-width: 900px) {
+  .calendar-card { padding: 16px; }
+  .calendar-month-title { font-size: 18px; }
+  .calendar-cell { min-height: 90px; padding: 6px; }
+  .calendar-date { font-size: 12px; }
+  .cal-event { font-size: 10.5px; padding: 4px 6px; }
+}
+@media (max-width: 768px) {
+  .topbar { padding: 12px 16px; }
+  .topbar-right { gap: 14px; }
+  .hr-link { display: none; }
+  .calendar-toolbar { flex-direction: column; align-items: flex-start; }
+  .calendar-month-title { text-align: left; font-size: 20px; }
+  .calendar-grid { font-size: 11px; }
+  .calendar-day-head { padding: 8px 4px; font-size: 11px; }
+  .calendar-cell { min-height: 80px; }
+  .cal-event { font-size: 10px; padding: 3px 5px; }
+}
+</style>
+</head>
+
+</head>
+<body>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">PPNJ</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#e05d3b" stroke-width="1.8">
+          <path d="M6 9a6 6 0 0 1 12 0c0 3.4 1 5 1.6 5.8H4.4C5 14 6 12.4 6 9z"></path>
+          <path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"></path>
+        </svg>
+        <span class="icon-dot"></span>
+      </button>
+
+      <a href="../index.html" class="topbar-link hr-link">Profil</a>
+
+      <details class="dropdown profile-menu">
+        <summary class="profile-summary">
+          <span class="avatar avatar-sm">SA</span>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu profile-dropdown">
+          <div class="profile-dropdown-name">
+            <span class="profile-dropdown-fullname">Staf Test Admin</span>
+            <span class="profile-dropdown-role">Pengurus &middot; Test Cawangan</span>
+          </div>
+          <a href="profil.html">Profil</a>
+          <a href="#">Tukar Kata Laluan</a>
+          <hr>
+          <a href="#" class="logout-link">Log Keluar</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <!-- App Layout with Sidebar -->
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-section">
+          <span class="sidebar-section-title"></span>
+          <a href="sumber_manusia.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
+            Dashboard
+          </a>
+          <a href="kalendar.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+            Kalendar
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Sumber Manusia</span>
+          
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Profil
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="senarai_pekerja.html" class="sidebar-sublink">Senarai Pekerja</a>
+              <a href="daftar_pekerja.html" class="sidebar-sublink">Daftar Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+              Cuti Pekerja
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_cuti_terkini.html" class="sidebar-sublink">Permohonan Cuti Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan Cuti</a>
+              <a href="#" class="sidebar-sublink">Permohonan GCR & Cuti Dibawa Kehadapan</a>
+              <a href="#" class="sidebar-sublink">Permohonan Pengeluaran</a>
+              <a href="bilangan_cuti_pekerja.html" class="sidebar-sublink">Bilangan Cuti Pekerja</a>
+              <a href="penyata_cuti_pekerja.html" class="sidebar-sublink">Penyata Cuti Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+              Bertugas Luar Kawasan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_bertugas_luar.html" class="sidebar-sublink">Permohonan Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+              Tuntutan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Rawatan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="tuntutan_rawatan_terkini.html" class="sidebar-sublink" style="font-size:12px;">Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Lejer Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Lebih Masa Kerja
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Syif
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Perjalanan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Perpindahan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+            </div>
+          </details>
+
+          <a href="payslip_pekerja.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 12.5l1.8 1.8L15 10.2"></path></svg>
+            Payslip
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path></svg>
+            Waktu Bekerja
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Pentadbir Sistem</span>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Tetapan
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Kumpulan Pengguna
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-user-name">STAF_TEST_ADMIN</span>
+        <span class="sidebar-user-role">PENGURUS</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+
+        <!-- Page Title with Year Selector -->
+        <header class="calendar-page-header">
+          <div>
+            <h1 class="calendar-title">Kalendar</h1>
+            <p class="calendar-subtitle">Cuti umum, cuti diluluskan dan acara jabatan.</p>
+          </div>
+          <select class="payslip-select" aria-label="Pilih tahun">
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+          </select>
+        </header>
+
+        <!-- Calendar Card -->
+        <section class="calendar-card">
+
+          <!-- Calendar Toolbar -->
+          <div class="calendar-toolbar">
+            <div class="calendar-nav-buttons">
+              <button class="calendar-nav-btn" aria-label="Bulan sebelum">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 6l-6 6 6 6"></path></svg>
+              </button>
+              <button class="calendar-nav-btn" aria-label="Bulan seterusnya">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 6l6 6-6 6"></path></svg>
+              </button>
+              <button class="calendar-today-btn">today</button>
+            </div>
+
+            <h2 class="calendar-month-title">September 2026</h2>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="calendar-grid">
+
+            <!-- Day Headers -->
+            <div class="calendar-day-head">Mon</div>
+            <div class="calendar-day-head">Tue</div>
+            <div class="calendar-day-head">Wed</div>
+            <div class="calendar-day-head">Thu</div>
+            <div class="calendar-day-head">Fri</div>
+            <div class="calendar-day-head">Sat</div>
+            <div class="calendar-day-head">Sun</div>
+
+            <!-- Week 1: 31 (prev month) | 1 | 2 | 3 | 4 | 5 | 6 -->
+            <div class="calendar-cell calendar-cell-muted">
+              <span class="calendar-date">31</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-public">Hari Kebangsaan</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">1</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">2</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">3</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-leave">Cuti Rehat – HACILA</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">4</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">5</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">6</span>
+            </div>
+
+            <!-- Week 2: 7 | 8 | 9 | 10 | 11 | 12 | 13 -->
+            <div class="calendar-cell">
+              <span class="calendar-date">7</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">8</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">9</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">10</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-leave">Cuti Rehat – HACILA</div>
+                <div class="cal-event cal-event-norecord">Cuti Tanpa Rekod – KHAIRUNISAH</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">11</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-sick">Cuti Sakit – KHAIRUNISAH</div>
+                <div class="cal-event cal-event-sick">Cuti Sakit – STAF_TEST</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">12</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">13</span>
+            </div>
+
+            <!-- Week 3: 14 | 15 | 16 | 17 | 18 | 19 | 20 -->
+            <div class="calendar-cell">
+              <span class="calendar-date">14</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-leave">Cuti Rehat – STAF_TEST</div>
+                <div class="cal-event cal-event-leave">Cuti Rehat – STAF_TEST_PENYELIA</div>
+                <div class="cal-event cal-event-sick">Cuti Sakit – KHAIRUNISAH</div>
+                <div class="cal-event cal-event-norecord">Cuti Tanpa Rekod – HACILA</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">15</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-leave">Cuti Rehat – KHAIRUNISAH</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">16</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-travel">Lawatan Keluar Negara – KHAIRUNISAH</div>
+                <div class="cal-event cal-event-public">Hari Malaysia</div>
+              </div>
+            </div>
+            <div class="calendar-cell calendar-cell-highlight">
+              <span class="calendar-date">17</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-travel">Lawatan Keluar Negara – KHAIRUNISAH</div>
+                <div class="cal-event cal-event-maternity">Cuti Bersalin – KHAIRUNISAH</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">18</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-maternity">Cuti Bersalin – HACILA</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">19</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">20</span>
+            </div>
+
+            <!-- Week 4: 21 | 22 | 23 | 24 | 25 | 26 | 27 -->
+            <div class="calendar-cell">
+              <span class="calendar-date">21</span>
+              <div class="calendar-events">
+                <div class="cal-event cal-event-travel">Lawatan Keluar Negara – KHAIRUNISAH</div>
+              </div>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">22</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">23</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">24</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">25</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">26</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">27</span>
+            </div>
+
+            <!-- Week 5: 28 | 29 | 30 | 1 | 2 | 3 | 4 (next month) -->
+            <div class="calendar-cell">
+              <span class="calendar-date">28</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">29</span>
+            </div>
+            <div class="calendar-cell">
+              <span class="calendar-date">30</span>
+            </div>
+            <div class="calendar-cell calendar-cell-muted">
+              <span class="calendar-date">1</span>
+            </div>
+            <div class="calendar-cell calendar-cell-muted">
+              <span class="calendar-date">2</span>
+            </div>
+            <div class="calendar-cell calendar-cell-muted">
+              <span class="calendar-date">3</span>
+            </div>
+            <div class="calendar-cell calendar-cell-muted">
+              <span class="calendar-date">4</span>
+            </div>
+
+          </div>
+
+          <!-- Legend -->
+          <div class="calendar-legend">
+            <span class="legend-item"><span class="legend-swatch swatch-leave"></span> Cuti Rehat</span>
+            <span class="legend-item"><span class="legend-swatch swatch-sick"></span> Cuti Sakit</span>
+            <span class="legend-item"><span class="legend-swatch swatch-norecord"></span> Cuti Tanpa Rekod</span>
+            <span class="legend-item"><span class="legend-swatch swatch-maternity"></span> Cuti Bersalin</span>
+            <span class="legend-item"><span class="legend-swatch swatch-travel"></span> Lawatan Keluar Negara</span>
+            <span class="legend-item"><span class="legend-swatch swatch-public"></span> Cuti Umum</span>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

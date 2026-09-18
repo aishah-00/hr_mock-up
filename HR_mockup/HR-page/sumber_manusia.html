@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Sumber Manusia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & BASE ============ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Plus Jakarta Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); color: #101828; -webkit-font-smoothing: antialiased; }
+
+/* ============ TOP BAR ============ */
+.topbar { background: #ffffff; border-bottom: 1px solid #e5ece9; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; position: sticky; top: 0; z-index: 30; }
+.logo-mark { display: inline-flex; align-items: center; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: #00a86b; background: #e3f5ef; padding: 8px 14px; border-radius: 10px; }
+.topbar-right { display: flex; align-items: center; gap: 22px; }
+.icon-btn { position: relative; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; border: none; background: transparent; cursor: pointer; }
+.icon-btn:hover { background: #f3f7f6; }
+.icon-dot { position: absolute; top: 6px; right: 7px; width: 6px; height: 6px; border-radius: 50%; background: #e05d3b; border: 1.5px solid #ffffff; }
+.topbar-link { font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; color: #475467; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer; list-style: none; }
+.topbar-link::-webkit-details-marker { display: none; }
+.topbar-link:hover { color: #00a86b; }
+.chevron { transition: transform 0.15s ease; }
+details[open] > summary .chevron { transform: rotate(180deg); }
+.dropdown { position: relative; }
+.dropdown summary { list-style: none; }
+.dropdown summary::-webkit-details-marker { display: none; }
+.dropdown-menu { position: absolute; top: calc(100% + 12px); right: 0; background: #ffffff; border: 1px solid #e5ece9; border-radius: 14px; box-shadow: 0 12px 28px rgba(16, 40, 34, 0.12); padding: 8px; min-width: 200px; display: flex; flex-direction: column; gap: 2px; z-index: 40; }
+.dropdown-menu a { display: block; padding: 10px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 600; color: #344054; text-decoration: none; }
+.dropdown-menu a:hover { background: #f3f7f6; color: #00a86b; }
+.dropdown-menu hr { border: none; border-top: 1px solid #f0f3f2; margin: 6px 2px; }
+.logout-link { color: #d92d20 !important; }
+.logout-link:hover { background: #fef3f2 !important; color: #d92d20 !important; }
+.profile-summary { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #475467; }
+.avatar-sm { width: 34px; height: 34px; border-radius: 10px; font-size: 13px; }
+.profile-dropdown-name { padding: 10px 12px 12px; border-bottom: 1px solid #f0f3f2; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; }
+.profile-dropdown-fullname { font-size: 13.5px; font-weight: 800; color: #101828; }
+.profile-dropdown-role { font-size: 12px; font-weight: 500; color: #98a2b3; }
+
+/* ============ PAGE & NAVBAR ============ */
+.page { max-width: 1180px; margin: 0 auto; padding: 28px 28px 56px; }
+.page-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; padding: 0 4px; }
+.brand-mark { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; color: #00a86b; }
+.brand-sub { font-size: 13px; font-weight: 500; color: #8a95a0; margin-left: 8px; }
+.update-note { font-size: 12px; font-weight: 500; color: #9aa5ab; }
+.navbar { background: #ffffff; border: 1px solid #e5ece9; border-radius: 16px; display: flex; align-items: center; gap: 4px; padding: 6px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); overflow-x: auto; }
+.nav-item { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 13px; font-weight: 600; color: #667085; padding: 11px 16px; border-radius: 11px; white-space: nowrap; transition: background-color 0.15s ease, color 0.15s ease; }
+.nav-item svg { flex-shrink: 0; opacity: 0.85; }
+.nav-item:hover { background: #f3f7f6; color: #344054; }
+.nav-item.active { background: #00a86b; color: #ffffff; box-shadow: 0 4px 10px rgba(0, 168, 107, 0.25); }
+
+/* ============ BUTTONS ============ */
+.btn-add-row { display: flex; align-items: center; gap: 6px; background: #00a86b; color: #ffffff; border: none; font-size: 12.5px; font-weight: 700; padding: 9px 16px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+.btn-add-row:hover { background: #008f5a; }
+.btn-outline { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid #d7e6e1; border-radius: 8px; background: #ffffff; font-size: 12.5px; font-weight: 700; color: #475467; cursor: pointer; text-decoration: none; transition: all 0.15s ease; }
+.btn-outline:hover { background: #f1f5f9; }
+.btn-outline-blue { color: #2f8fe0; border-color: #bce0fd; }
+.btn-outline-blue:hover { background: #eff6ff; }
+
+/* ============ CARDS & TABLES ============ */
+.info-card { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 24px 28px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.info-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.info-card-header h2 { font-size: 16.5px; font-weight: 800; color: #101828; }
+.data-table { border: 1px solid #eef0f1; border-radius: 14px; overflow: hidden; }
+.data-table-head, .data-table-row { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr 90px; align-items: center; gap: 12px; padding: 13px 18px; }
+.data-table-head { background: #f8faf9; font-size: 11.5px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.3px; }
+.data-table-row { font-size: 13.5px; font-weight: 600; color: #344054; border-top: 1px solid #f0f3f2; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+/* ============ APP LAYOUT & SIDEBAR ============ */
+.app-layout { display: flex; min-height: calc(100vh - 70px); }
+.sidebar { width: 280px; background: #ffffff; border-right: 1px solid #e5ece9; display: flex; flex-direction: column; flex-shrink: 0; position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; }
+.sidebar-scroll { flex: 1; padding: 0 12px 20px; overflow-y: auto; }
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-section-title { display: block; font-size: 11px; font-weight: 700; color: #98a2b3; text-transform: uppercase; letter-spacing: 0.5px; padding: 0 12px 8px; }
+.sidebar-link { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475467; text-decoration: none; transition: all 0.15s ease; margin-bottom: 2px; }
+.sidebar-link svg { color: #98a2b3; flex-shrink: 0; }
+.sidebar-link:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-link:hover svg { color: #00a86b; }
+.sidebar-link.active { background: #e3f5ef; color: #00a86b; font-weight: 700; }
+.sidebar-link.active svg { color: #00a86b; }
+.sidebar-link .chevron-right { margin-left: auto; color: #98a2b3; opacity: 0.5; }
+.sidebar-footer { padding: 20px; border-top: 1px solid #f0f3f2; display: flex; flex-direction: column; gap: 2px; }
+.sidebar-user-name { font-size: 13px; font-weight: 800; color: #101828; }
+.sidebar-user-role { font-size: 11px; font-weight: 600; color: #98a2b3; text-transform: uppercase; }
+.main-content { flex: 1; padding: 28px; background: #eef6f2; background-image: radial-gradient(circle at 100% 0%, #dff2ea 0%, #eef6f2 45%); overflow-y: auto; }
+.sidebar-dropdown summary { list-style: none; cursor: pointer; }
+.sidebar-dropdown summary::-webkit-details-marker { display: none; }
+.sidebar-dropdown[open] > summary .chevron-right { transform: rotate(90deg); }
+.sidebar-submenu { display: flex; flex-direction: column; padding-left: 24px; margin-top: 4px; margin-bottom: 8px; border-left: 2px solid #e5ece9; margin-left: 14px; }
+.sidebar-sublink { display: flex; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; text-decoration: none; border-radius: 6px; transition: all 0.15s ease; }
+.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+.sidebar-submenu .sidebar-submenu { padding-left: 12px; margin-left: 6px; border-left: 1px solid #e5ece9; }
+.sidebar-dropdown > summary.sidebar-sublink { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 13px; font-weight: 600; color: #667085; border-radius: 6px; cursor: pointer; }
+.sidebar-dropdown > summary.sidebar-sublink:hover { background: #f3f7f6; color: #00a86b; }
+
+/* ============ SUMBER MANUSIA (khusus) ============ */
+.brand-mark-lg { font-size: 24px; letter-spacing: normal; }
+.panels-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 20px; }
+
+/* HERO SUMMARY */
+.hero-summary { display: flex; align-items: center; justify-content: space-around; background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 24px 32px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.hero-stat { display: flex; align-items: center; gap: 16px; flex: 1; justify-content: center; }
+.hero-stat-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.hero-icon-teal { background: #e3f5ef; color: #00a86b; }
+.hero-icon-blue { background: #dbeafe; color: #2563eb; }
+.hero-icon-orange { background: #ffedd5; color: #c8712c; }
+.hero-stat-info { display: flex; flex-direction: column; gap: 2px; }
+.hero-stat-value { font-size: 26px; font-weight: 800; color: #101828; line-height: 1; }
+.hero-stat-label { font-size: 12.5px; font-weight: 600; color: #8a95a0; }
+.hero-divider { width: 1px; height: 48px; background: #eef0f1; }
+
+/* STATUS BELT */
+.status-belt-section { background: #ffffff; border: 1px solid #e5ece9; border-radius: 18px; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(16, 40, 34, 0.03); }
+.status-belt-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+.status-belt-header h3 { font-size: 14px; font-weight: 800; color: #101828; }
+.status-chips-total { font-size: 12px; font-weight: 600; color: #98a2b3; }
+.status-belt { overflow: hidden; position: relative; padding: 4px 0; mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0, #000 60px, #000 calc(100% - 60px), transparent 100%); }
+.status-belt-track { display: flex; gap: 14px; width: max-content; animation: belt-scroll 40s linear infinite; }
+.status-belt:hover .status-belt-track { animation-play-state: paused; }
+@keyframes belt-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.status-box { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-radius: 14px; min-width: 220px; flex-shrink: 0; border: 1.5px solid transparent; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.status-box:hover { transform: translateY(-3px); box-shadow: 0 10px 22px rgba(0,0,0,0.08); }
+.status-box-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; background: rgba(255, 255, 255, 0.7); }
+.status-box-info { display: flex; flex-direction: column; gap: 2px; }
+.status-box-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: #475467; }
+.status-box-value { font-size: 24px; font-weight: 800; line-height: 1; color: #101828; }
+.status-box-green { background: linear-gradient(135deg, #e8f7f3, #f5fdfa); border-color: #a7f3d0; }
+.status-box-green .status-box-value { color: #00a86b; }
+.status-box-green .status-box-label { color: #047857; }
+.status-box-blue { background: linear-gradient(135deg, #eff6ff, #f8fbff); border-color: #bfdbfe; }
+.status-box-blue .status-box-value { color: #2563eb; }
+.status-box-blue .status-box-label { color: #1d4ed8; }
+.status-box-yellow { background: linear-gradient(135deg, #fffbeb, #fffdf5); border-color: #fde68a; }
+.status-box-yellow .status-box-value { color: #d97706; }
+.status-box-yellow .status-box-label { color: #b45309; }
+.status-box-red { background: linear-gradient(135deg, #fef2f2, #fff8f8); border-color: #fecaca; }
+.status-box-red .status-box-value { color: #dc2626; }
+.status-box-red .status-box-label { color: #b91c1c; }
+.status-box-teal { background: linear-gradient(135deg, #f0fdfa, #f7fefc); border-color: #99f6e4; }
+.status-box-teal .status-box-value { color: #0d9488; }
+.status-box-teal .status-box-label { color: #0f766e; }
+.status-box-purple { background: linear-gradient(135deg, #f5f3ff, #faf8ff); border-color: #ddd6fe; }
+.status-box-purple .status-box-value { color: #7c3aed; }
+.status-box-purple .status-box-label { color: #6d28d9; }
+.status-box-pink { background: linear-gradient(135deg, #fdf2f8, #fef7fb); border-color: #fbcfe8; }
+.status-box-pink .status-box-value { color: #db2777; }
+.status-box-pink .status-box-label { color: #be185d; }
+.status-box-indigo { background: linear-gradient(135deg, #eef2ff, #f7f9ff); border-color: #c7d2fe; }
+.status-box-indigo .status-box-value { color: #4f46e5; }
+.status-box-indigo .status-box-label { color: #4338ca; }
+
+/* CHART */
+.chart-legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #f0f3f2; }
+.legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: #475467; }
+.legend-swatch { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0,0,0,0.04) inset; }
+.chart-container { display: flex; height: 300px; padding-top: 20px; }
+.chart-y-axis { display: flex; flex-direction: column; justify-content: space-between; padding-right: 16px; font-size: 11px; font-weight: 600; color: #98a2b3; text-align: right; border-right: 1px solid #eef0f1; height: 100%; }
+.chart-bars { display: flex; flex: 1; align-items: flex-end; gap: 12px; padding-left: 16px; padding-bottom: 24px; position: relative; }
+.chart-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; }
+.chart-bar-stack { width: 100%; max-width: 40px; display: flex; flex-direction: column-reverse; border-radius: 4px 4px 0 0; overflow: visible; transition: height 0.3s ease; }
+.chart-label { position: absolute; bottom: 0; font-size: 11px; font-weight: 600; color: #667085; }
+.bar-segment { width: 100%; position: relative; cursor: pointer; transition: filter 0.15s ease; border-radius: 0; }
+.chart-bar-stack > .bar-segment:last-child { border-top-left-radius: 4px; border-top-right-radius: 4px; }
+.bar-segment:hover { filter: brightness(1.15); z-index: 5; }
+.bar-segment[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px); background: #101828; color: #ffffff; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 100; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); }
+.bar-segment[data-tooltip]::before { content: ""; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%) translateY(4px); border: 6px solid transparent; border-top-color: #101828; opacity: 0; pointer-events: none; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 100; }
+.bar-segment[data-tooltip]:hover::after,
+.bar-segment[data-tooltip]:hover::before { opacity: 1; transform: translateX(-50%) translateY(0); }
+.bg-blue { background-color: #3b82f6; }
+.bg-green { background-color: #10b981; }
+.bg-red { background-color: #ef4444; }
+.bg-orange { background-color: #f59e0b; }
+.bg-purple { background-color: #8b5cf6; }
+.bg-teal { background-color: #14b8a6; }
+.bg-pink { background-color: #ec4899; }
+.bg-dark-green { background-color: #047857; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 1024px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; top: 0; border-right: none; border-bottom: 1px solid #e5ece9; }
+  .sidebar-scroll { max-height: 400px; }
+  .main-content { padding: 20px; }
+}
+
+@media (max-width: 768px) {
+  .hero-summary { flex-direction: column; gap: 16px; padding: 20px; }
+  .hero-stat { width: 100%; justify-content: flex-start; }
+  .hero-divider { width: 100%; height: 1px; }
+  .status-belt-section { padding: 16px; }
+  .status-box { min-width: 180px; padding: 12px 16px; gap: 10px; }
+  .status-box-icon { width: 38px; height: 38px; font-size: 18px; border-radius: 10px; }
+  .status-box-value { font-size: 20px; }
+  .status-box-label { font-size: 11px; }
+  .status-belt-track { animation-duration: 30s; }
+  .chart-bars { min-width: 600px; }
+  .chart-container { overflow-x: auto; padding-bottom: 8px; }
+  .panels-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .topbar { padding: 12px 16px; }
+  .topbar-right { gap: 14px; }
+  .hr-link { display: none; }
+  .page-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .navbar { flex-wrap: nowrap; }
+  .data-table-head { display: none; }
+  .data-table-row { grid-template-columns: 1fr; gap: 4px; }
+  .row-actions { justify-content: flex-start; margin-top: 6px; }
+  .sidebar-header, .sidebar-footer { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+  <!-- Top utility bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">PPNJ</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="Notifikasi">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#e05d3b" stroke-width="1.8">
+          <path d="M6 9a6 6 0 0 1 12 0c0 3.4 1 5 1.6 5.8H4.4C5 14 6 12.4 6 9z"></path>
+          <path d="M10.3 19a1.8 1.8 0 0 0 3.4 0"></path>
+        </svg>
+        <span class="icon-dot"></span>
+      </button>
+
+      <a href="../index.html" class="topbar-link hr-link">Profil</a>
+
+      <details class="dropdown profile-menu">
+        <summary class="profile-summary">
+          <span class="avatar avatar-sm">SA</span>
+          <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+        </summary>
+        <div class="dropdown-menu profile-dropdown">
+          <div class="profile-dropdown-name">
+            <span class="profile-dropdown-fullname">Staf Test Admin</span>
+            <span class="profile-dropdown-role">Pengurus &middot; Test Cawangan</span>
+          </div>
+          <a href="../profil.html">Profil</a>
+          <a href="#">Tukar Kata Laluan</a>
+          <hr>
+          <a href="#" class="logout-link">Log Keluar</a>
+        </div>
+      </details>
+    </div>
+  </header>
+
+  <!-- App Layout with Sidebar -->
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+        <div class="sidebar-section">
+          <span class="sidebar-section-title"></span>
+          <a href="sumber_manusia.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"></rect><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"></rect><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"></rect></svg>
+            Dashboard
+          </a>
+          <a href="kalendar.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+            Kalendar
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Sumber Manusia</span>
+          
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Profil
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="senarai_pekerja.html" class="sidebar-sublink">Senarai Pekerja</a>
+              <a href="daftar_pekerja.html" class="sidebar-sublink">Daftar Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="4.5" width="17" height="16" rx="2"></rect><path d="M8 3v3M16 3v3M3.5 9.5h17"></path></svg>
+              Cuti Pekerja
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_cuti_terkini.html" class="sidebar-sublink">Permohonan Cuti Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan Cuti</a>
+              <a href="#" class="sidebar-sublink">Permohonan GCR & Cuti Dibawa Kehadapan</a>
+              <a href="#" class="sidebar-sublink">Permohonan Pengeluaran</a>
+              <a href="bilangan_cuti_pekerja.html" class="sidebar-sublink">Bilangan Cuti Pekerja</a>
+              <a href="penyata_cuti_pekerja.html" class="sidebar-sublink">Penyata Cuti Pekerja</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 20V9.5L12 4l7.5 5.5V20"></path><path d="M9.5 20v-6h5v6"></path></svg>
+              Bertugas Luar Kawasan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <a href="permohonan_bertugas_luar.html" class="sidebar-sublink">Permohonan Terkini</a>
+              <a href="#" class="sidebar-sublink">Sejarah Permohonan</a>
+            </div>
+          </details>
+
+          <details class="sidebar-dropdown">
+            <summary class="sidebar-link">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3.5h7l4 4v13H7z"></path><path d="M10 12.5h5M10 16h5"></path></svg>
+              Tuntutan
+              <svg class="chevron-right" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+            </summary>
+            <div class="sidebar-submenu">
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Rawatan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="tuntutan_rawatan_terkini.html" class="sidebar-sublink" style="font-size:12px;">Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Lejer Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Lebih Masa Kerja
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Syif
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Perjalanan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+
+              <details class="sidebar-dropdown">
+                <summary class="sidebar-sublink" style="display:flex; justify-content:space-between; align-items:center;">
+                  Tuntutan Elaun Perpindahan
+                  <svg class="chevron-right" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"></path></svg>
+                </summary>
+                <div class="sidebar-submenu" style="padding-left: 12px; margin-top: 2px;">
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Tuntutan Terkini</a>
+                  <a href="#" class="sidebar-sublink" style="font-size:12px;">Sejarah Tuntutan</a>
+                </div>
+              </details>
+            </div>
+          </details>
+
+          <a href="payslip_pekerja.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 12.5l1.8 1.8L15 10.2"></path></svg>
+            Payslip
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7v5l3.5 2"></path></svg>
+            Waktu Bekerja
+          </a>
+        </div>
+
+        <div class="sidebar-section">
+          <span class="sidebar-section-title">Pentadbir Sistem</span>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            Tetapan
+          </a>
+          <a href="#" class="sidebar-link">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Kumpulan Pengguna
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-user-name">STAF_TEST_ADMIN</span>
+        <span class="sidebar-user-role">PENGURUS</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="page-content">
+        
+        <!-- Page Title -->
+        <header class="page-top" style="margin-bottom: 24px;">
+          <div class="brand">
+            <span class="brand-mark brand-mark-lg">Dashboard Sumber Manusia</span>
+            <span class="brand-sub" style="display: block; margin-left: 0; margin-top: 4px;">Paparan keseluruhan statistik dan tindakan pengurusan sumber manusia.</span>
+          </div>
+          <div class="update-note">Kemaskini terakhir &middot; 24 Okt 2024</div>
+        </header>
+
+        <!-- HERO SUMMARY -->
+        <section class="hero-summary">
+          <div class="hero-stat">
+            <div class="hero-stat-icon hero-icon-teal">👥</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value">16</span>
+              <span class="hero-stat-label">Jumlah Pengguna</span>
+            </div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-icon hero-icon-blue">♂</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value">14</span>
+              <span class="hero-stat-label">Lelaki</span>
+            </div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-icon hero-icon-orange">♀</div>
+            <div class="hero-stat-info">
+              <span class="hero-stat-value">2</span>
+              <span class="hero-stat-label">Perempuan</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATUS PEKERJAAN - Belt Bergerak -->
+        <section class="status-belt-section">
+          <div class="status-belt-header">
+            <h3>Status Pekerjaan</h3>
+            <span class="status-chips-total">16 jumlah keseluruhan</span>
+          </div>
+
+          <div class="status-belt">
+            <div class="status-belt-track">
+              <!-- Set 1 -->
+              <div class="status-box status-box-green">
+                <div class="status-box-icon">🏅</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Bekerja</span>
+                  <span class="status-box-value">16</span>
+                </div>
+              </div>
+              <div class="status-box status-box-blue">
+                <div class="status-box-icon">👤</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Bersara</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-yellow">
+                <div class="status-box-icon">🚪</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Berhenti</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-red">
+                <div class="status-box-icon">🕊️</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Meninggal Dunia</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-teal">
+                <div class="status-box-icon">📋</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Pelatih</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-purple">
+                <div class="status-box-icon">🏢</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Syarikat Subsidiari</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-pink">
+                <div class="status-box-icon">⏳</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Tamat Kontrak</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-indigo">
+                <div class="status-box-icon">🎓</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Tamat Latihan Protege</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-red">
+                <div class="status-box-icon">🚫</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Ditamatkan Perkhidmatan</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-green">
+                <div class="status-box-icon">✅</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Diserap Lantikan Tetap</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+
+              <!-- Set 2 (DUPLICATE untuk loop seamless) -->
+              <div class="status-box status-box-green">
+                <div class="status-box-icon">🏅</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Bekerja</span>
+                  <span class="status-box-value">16</span>
+                </div>
+              </div>
+              <div class="status-box status-box-blue">
+                <div class="status-box-icon">👤</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Bersara</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-yellow">
+                <div class="status-box-icon">🚪</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Berhenti</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-red">
+                <div class="status-box-icon">🕊️</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Meninggal Dunia</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-teal">
+                <div class="status-box-icon">📋</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Pelatih</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-purple">
+                <div class="status-box-icon">🏢</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Syarikat Subsidiari</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-pink">
+                <div class="status-box-icon">⏳</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Tamat Kontrak</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-indigo">
+                <div class="status-box-icon">🎓</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Tamat Latihan Protege</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-red">
+                <div class="status-box-icon">🚫</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Ditamatkan Perkhidmatan</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+              <div class="status-box status-box-green">
+                <div class="status-box-icon">✅</div>
+                <div class="status-box-info">
+                  <span class="status-box-label">Diserap Lantikan Tetap</span>
+                  <span class="status-box-value">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Chart Section -->
+        <section class="info-card" style="margin-bottom: 24px;">
+          <div class="info-card-header">
+            <h2>Permohonan Cuti Diluluskan Mengikut Bulan</h2>
+          </div>
+
+          <!-- Legend -->
+          <div class="chart-legend">
+            <span class="legend-item"><span class="legend-swatch bg-blue"></span> Cuti Rehat</span>
+            <span class="legend-item"><span class="legend-swatch bg-green"></span> Cuti Sakit / Hospitalisasi</span>
+            <span class="legend-item"><span class="legend-swatch bg-red"></span> Cuti Tanpa Gaji</span>
+            <span class="legend-item"><span class="legend-swatch bg-orange"></span> Cuti Ihsan</span>
+            <span class="legend-item"><span class="legend-swatch bg-purple"></span> Cuti Gantian</span>
+            <span class="legend-item"><span class="legend-swatch bg-teal"></span> Cuti Tanpa Rekod</span>
+            <span class="legend-item"><span class="legend-swatch bg-pink"></span> Cuti Bersalin</span>
+            <span class="legend-item"><span class="legend-swatch bg-dark-green"></span> Lawatan Keluar Negara</span>
+          </div>
+
+          <div class="chart-container">
+            <div class="chart-y-axis">
+              <span>16</span><span>12</span><span>8</span><span>4</span><span>0</span>
+            </div>
+            <div class="chart-bars">
+
+              <!-- Jan: 6 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 37.5%;">
+                  <div class="bar-segment bg-blue" style="height: 50%;" data-tooltip="Cuti Rehat: 3 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 50%;" data-tooltip="Cuti Sakit / Hospitalisasi: 3 hari"></div>
+                </div>
+                <span class="chart-label">Jan</span>
+              </div>
+
+              <!-- Feb: 8 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 50%;">
+                  <div class="bar-segment bg-blue" style="height: 40%;" data-tooltip="Cuti Rehat: 3 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 30%;" data-tooltip="Cuti Sakit / Hospitalisasi: 2 hari"></div>
+                  <div class="bar-segment bg-orange" style="height: 30%;" data-tooltip="Cuti Ihsan: 3 hari"></div>
+                </div>
+                <span class="chart-label">Feb</span>
+              </div>
+
+              <!-- Mac: 12 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 75%;">
+                  <div class="bar-segment bg-blue" style="height: 40%;" data-tooltip="Cuti Rehat: 5 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 40%;" data-tooltip="Cuti Sakit / Hospitalisasi: 5 hari"></div>
+                  <div class="bar-segment bg-red" style="height: 20%;" data-tooltip="Cuti Tanpa Gaji: 2 hari"></div>
+                </div>
+                <span class="chart-label">Mac</span>
+              </div>
+
+              <!-- Apr: 4 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 25%;">
+                  <div class="bar-segment bg-blue" style="height: 100%;" data-tooltip="Cuti Rehat: 4 hari"></div>
+                </div>
+                <span class="chart-label">Apr</span>
+              </div>
+
+              <!-- Mei: 10 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 62.5%;">
+                  <div class="bar-segment bg-blue" style="height: 30%;" data-tooltip="Cuti Rehat: 3 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 30%;" data-tooltip="Cuti Sakit / Hospitalisasi: 3 hari"></div>
+                  <div class="bar-segment bg-purple" style="height: 20%;" data-tooltip="Cuti Gantian: 2 hari"></div>
+                  <div class="bar-segment bg-orange" style="height: 20%;" data-tooltip="Cuti Ihsan: 2 hari"></div>
+                </div>
+                <span class="chart-label">Mei</span>
+              </div>
+
+              <!-- Jun: 5 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 31.25%;">
+                  <div class="bar-segment bg-blue" style="height: 60%;" data-tooltip="Cuti Rehat: 3 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 40%;" data-tooltip="Cuti Sakit / Hospitalisasi: 2 hari"></div>
+                </div>
+                <span class="chart-label">Jun</span>
+              </div>
+
+              <!-- Jul: 7 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 43.75%;">
+                  <div class="bar-segment bg-blue" style="height: 50%;" data-tooltip="Cuti Rehat: 4 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 50%;" data-tooltip="Cuti Sakit / Hospitalisasi: 3 hari"></div>
+                </div>
+                <span class="chart-label">Jul</span>
+              </div>
+
+              <!-- Ogo: 9 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 56.25%;">
+                  <div class="bar-segment bg-blue" style="height: 40%;" data-tooltip="Cuti Rehat: 4 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 30%;" data-tooltip="Cuti Sakit / Hospitalisasi: 3 hari"></div>
+                  <div class="bar-segment bg-orange" style="height: 30%;" data-tooltip="Cuti Ihsan: 2 hari"></div>
+                </div>
+                <span class="chart-label">Ogo</span>
+              </div>
+
+              <!-- Sep: 16 total (puncak) -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 100%;">
+                  <div class="bar-segment bg-dark-green" style="height: 5%;" data-tooltip="Lawatan Keluar Negara: 1 hari"></div>
+                  <div class="bar-segment bg-pink" style="height: 5%;" data-tooltip="Cuti Bersalin: 1 hari"></div>
+                  <div class="bar-segment bg-teal" style="height: 10%;" data-tooltip="Cuti Tanpa Rekod: 2 hari"></div>
+                  <div class="bar-segment bg-purple" style="height: 10%;" data-tooltip="Cuti Gantian: 2 hari"></div>
+                  <div class="bar-segment bg-orange" style="height: 10%;" data-tooltip="Cuti Ihsan: 2 hari"></div>
+                  <div class="bar-segment bg-red" style="height: 10%;" data-tooltip="Cuti Tanpa Gaji: 2 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 25%;" data-tooltip="Cuti Sakit / Hospitalisasi: 4 hari"></div>
+                  <div class="bar-segment bg-blue" style="height: 25%;" data-tooltip="Cuti Rehat: 4 hari"></div>
+                </div>
+                <span class="chart-label">Sep</span>
+              </div>
+
+              <!-- Okt: 11 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 68.75%;">
+                  <div class="bar-segment bg-blue" style="height: 50%;" data-tooltip="Cuti Rehat: 6 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 30%;" data-tooltip="Cuti Sakit / Hospitalisasi: 3 hari"></div>
+                  <div class="bar-segment bg-red" style="height: 20%;" data-tooltip="Cuti Tanpa Gaji: 2 hari"></div>
+                </div>
+                <span class="chart-label">Okt</span>
+              </div>
+
+              <!-- Nov: 14 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 87.5%;">
+                  <div class="bar-segment bg-blue" style="height: 50%;" data-tooltip="Cuti Rehat: 7 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 30%;" data-tooltip="Cuti Sakit / Hospitalisasi: 4 hari"></div>
+                  <div class="bar-segment bg-pink" style="height: 20%;" data-tooltip="Cuti Bersalin: 3 hari"></div>
+                </div>
+                <span class="chart-label">Nov</span>
+              </div>
+
+              <!-- Dis: 3 total -->
+              <div class="chart-bar-group">
+                <div class="chart-bar-stack" style="height: 18.75%;">
+                  <div class="bar-segment bg-blue" style="height: 50%;" data-tooltip="Cuti Rehat: 2 hari"></div>
+                  <div class="bar-segment bg-green" style="height: 50%;" data-tooltip="Cuti Sakit / Hospitalisasi: 1 hari"></div>
+                </div>
+                <span class="chart-label">Dis</span>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Tables Section -->
+        <section class="panels-grid" style="grid-template-columns: 1fr; gap: 24px;">
+          
+          <div class="info-card">
+            <div class="info-card-header"><h2>Perlu Tindakan</h2></div>
+            <div class="data-table">
+              <div class="data-table-head" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Jenis</span><span>Nama Pekerja</span><span>Tarikh / Bulan</span><span></span>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Cuti Rehat</span><span>MOHD SABRI</span><span>2026-09-11</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Cuti Ihsan</span><span>KHAIRUNISAH</span><span>2026-09-11</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Cuti Tanpa Gaji (Baharu)</span><span>KHAIRUNISAH</span><span>2025-09-05</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Cuti Tanpa Gaji (Baharu)</span><span>STAF_TEST_ADMIN</span><span>2026-09-11</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Tuntutan Elaun Perpindahan</span><span>KHAIRUNISAH</span><span>-</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-header"><h2>Diluluskan</h2></div>
+            <div class="data-table">
+              <div class="data-table-head" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Jenis</span><span>Nama Pekerja</span><span>Tarikh / Bulan</span><span></span>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Tuntutan Lebih Masa Kerja</span><span>HACILA</span><span>08/2026</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+              <div class="data-table-row" style="grid-template-columns: 2fr 2fr 1.5fr 100px;">
+                <span>Tuntutan Elaun Syif</span><span>KHAIRUNISAH</span><span>09/2026</span>
+                <div class="row-actions" style="justify-content: flex-start;"><button class="btn-outline btn-outline-blue" style="padding: 6px 12px; font-size: 12px;">Papar</button></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
